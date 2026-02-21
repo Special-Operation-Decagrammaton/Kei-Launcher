@@ -141,6 +141,11 @@ class App(ctk.CTk):
         self.after(0, lambda: self.toggle_progress(True))
         self.progress_bar.set(0)
         
+        if not check_game_executable(self.game_config.GamePath):
+            self.status_label.configure(text="Set folder first!", text_color="red")
+            self.after(0, lambda: self.toggle_progress(False))
+            return
+        
         url = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{self.game_config.Branch.value}/GameManifest.json"
         try:
             response = requests.get(url, timeout=10)
