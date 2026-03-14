@@ -19,7 +19,7 @@ class UpdateManager:
         else:
             self.app.progress_bar.pack_forget()
             
-    def display_status(self, text: str, text_color: str = "white", stay: bool = False):
+    def display_status(self, text: str, text_color: str = "white", stay: bool = False, timer: int = 7500):
         if self.status_timer:
             self.app.after_cancel(self.status_timer)
 
@@ -27,7 +27,7 @@ class UpdateManager:
         self.app.status_label.pack(side="bottom")
 
         if not stay:
-            self.status_timer = self.app.after(5000, self.app.status_label.pack_forget)
+            self.status_timer = self.app.after(timer, self.app.status_label.pack_forget)
     
     def check_updates(self):
         self.display_status(text="Checking manifest...", text_color="yellow")
@@ -79,7 +79,7 @@ class UpdateManager:
                 dest = Path(self.app.game_config.GamePath) / asset.Path
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 temp_dest = dest.with_suffix(dest.suffix + ".tmp")
-                download_url = f"https://github.com/{REPO}/releases/download/{self.app.game_config.BuildTag.value}/{asset.OriginalFileName}"
+                download_url = f"https://github.com/{REPO}/releases/download/{self.app.game_config.BuildTag.value}/{asset.Hash}"
                 
                 self.app.after(0, lambda n=asset.OriginalFileName: self.display_status(text=f"Downloading: {n}", stay=True))
 

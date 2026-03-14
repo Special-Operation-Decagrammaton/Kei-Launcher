@@ -21,14 +21,15 @@ class App(ctk.CTk):
         
         # App Repo
         github_icon_path = resource_path("asset/github-logo.png")
-        github_image = ctk.CTkImage(
-            light_image=Image.open(github_icon_path),
-            dark_image=Image.open(github_icon_path),
+        image_data = Image.open(github_icon_path).convert("RGBA")
+        self.github_image = ctk.CTkImage(
+            light_image=image_data,
+            dark_image=image_data,
             size=(30, 30)
         )
         self.github_btn = ctk.CTkButton(
             self,
-            image=github_image,
+            image=self.github_image,
             text="",
             width=30,
             height=30,
@@ -45,7 +46,7 @@ class App(ctk.CTk):
         # Description
         self.description = ctk.CTkLabel(
             self,
-            text="Branch Selection\nMain branch is updated up to global version of the game.\nTranslation branch is the same as main branch, but with more recent/community added translations.",
+            text="Branch Selection\n\nMain branch is updated up to global version of the game.\nTranslation branch is the same as main branch, but with more recent/community added translations.",
             font=("Roboto", 14),
             justify="left"
         )

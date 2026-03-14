@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            runner: ubuntu-latest
+            sep: ":"
+            icon: "asset/kei.png"
+            suffix: ""
+          - os: windows
+            runner: windows-latest
+            sep: ";"
+            icon: "asset/kei.ico"
+            suffix: ".exe"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build executable
+      run: |
+        pyinstaller --noconsole --onefile \
+          --icon="${{ matrix.icon }}" \
+          --name "BA_TL_Launcher" \
+          --add-data "asset${{ matrix.sep }}asset" \
+          --collect-all customtkinter \
+          --clean \
+          main.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: BA-TL-Launcher-${{ matrix.os }}
+        path: dist/BA_TL_Launcher${{ matrix.suffix }}
