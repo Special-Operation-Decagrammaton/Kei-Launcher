@@ -28,22 +28,25 @@ class UpdateManager:
 
         if not stay:
             self.status_timer = self.app.after(timer, self.app.status_label.pack_forget)
+            
+    def start_check_updates_thread(self):
+        threading.Thread(target=self.check_updates, daemon=True).start()
     
     def check_updates(self):
-        self.display_status(text="Checking manifest...", text_color="yellow")
+        self.app.after(0, lambda: self.display_status(text="Checking manifest...", text_color="yellow"))
         url = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{self.app.game_config.Branch.value}/GameManifest.json"
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=10) 
             if response.status_code == 200:
                 self.app.remote_game_manifest = load_manifest_memory(response.content)
                 textMsg, textColor = check_new_update(self.app.game_config, self.app.installed_game_manifest, self.app.remote_game_manifest)
-                self.display_status(text=textMsg, text_color=textColor)
-                self.app.setting_manager.update_latest_patch_text()
+                self.app.after(0, lambda: self.display_status(text=textMsg, text_color=textColor))
+                self.app.after(0, self.app.setting_manager.update_latest_patch_text)
             else:
-                self.display_status(text="No updates found.", text_color="green")
+                self.app.after(0, lambda: self.display_status(text="No updates found.", text_color="green"))
         except Exception as e:
-            print(e)
-            self.display_status(text=f"Error: {str(e)}", text_color="red")
+            print(f"Manifest fetch error: {e}")
+            self.app.after(0, lambda: self.display_status(text=f"Check failed: {str(e)}", text_color="red"))
     
     def start_update_thread(self):
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():

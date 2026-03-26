@@ -11,6 +11,8 @@ from model.config import Branch
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self._set_appearance_mode("dark")
+        self.configure(fg_color="#1a1a1a")
         self.launch_manager = LaunchManager(self)
         self.setting_manager = SettingManager(self)
         self.update_manager = UpdateManager(self)
@@ -143,7 +145,7 @@ class App(ctk.CTk):
         # Orange Stack
         orange_style = {"width": btn_w, "height": btn_h, "fg_color": ORANGE_COLOR, "hover_color": ORANGE_HOVER}
         
-        self.btn_check = ctk.CTkButton(self.col_right, text="Check Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.check_updates)
+        self.btn_check = ctk.CTkButton(self.col_right, text="Check Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_check_updates_thread)
         self.btn_check.pack(pady=5)
         
         self.btn_update = ctk.CTkButton(self.col_right, text="Install / Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_update_thread)
@@ -185,10 +187,11 @@ class App(ctk.CTk):
             self.setting_manager.set_branch_description(self.game_config.Branch.value)
         if self.installed_game_manifest is not None:
             self.setting_manager.update_installed_patch_text()
-            self.update_manager.check_updates()
+            self.update_manager.start_check_updates_thread()
             
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("blue")
     if is_admin():
         app = App()
         app.mainloop()
