@@ -1,14 +1,16 @@
 from pathlib import Path
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class GameFileInfo(BaseModel):
     OriginalFileName: str
     Path: str
-    Hash: int
+    Hash: Optional[int] = 0
 
 class GameManifest(BaseModel):
-    StringVersion: str
+    PatchNote: Optional[str] = None
+    UpdateDate: Optional[str] = None
+    StringVersion: Optional[str] = None
     Files: List[GameFileInfo]
     
 def load_manifest_memory(content: bytes) -> GameManifest:

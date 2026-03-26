@@ -15,16 +15,16 @@ class UpdateManager:
         
     def toggle_progress(self, show: bool):
         if show:
-            self.app.progress_bar.pack(side="bottom", pady=5)
+            self.app.progress_bar.pack(fill="x", side="bottom", pady=(5, 0))
         else:
             self.app.progress_bar.pack_forget()
             
-    def display_status(self, text: str, text_color: str = "white", stay: bool = False, timer: int = 7500):
+    def display_status(self, text: str, text_color: str = "white", stay: bool = False, timer: int = 3000):
         if self.status_timer:
             self.app.after_cancel(self.status_timer)
 
         self.app.status_label.configure(text=text, text_color=text_color)
-        self.app.status_label.pack(side="bottom")
+        self.app.status_label.pack(side="top", pady=(0, 5))
 
         if not stay:
             self.status_timer = self.app.after(timer, self.app.status_label.pack_forget)
@@ -35,27 +35,34 @@ class UpdateManager:
         try:
             response = requests.get(url)
             if response.status_code == 200:
-                latest_manifest = load_manifest_memory(response.content)
-                textMsg, textColor = check_new_update(self.app.game_config, self.app.game_manifest, latest_manifest)
+                self.app.remote_game_manifest = load_manifest_memory(response.content)
+                textMsg, textColor = check_new_update(self.app.game_config, self.app.installed_game_manifest, self.app.remote_game_manifest)
                 self.display_status(text=textMsg, text_color=textColor)
+                self.app.setting_manager.update_latest_patch_text()
             else:
                 self.display_status(text="No updates found.", text_color="green")
         except Exception as e:
-            self.display_status(text=f"API Error: {str(e)}", text_color="red")
+            print(e)
+            self.display_status(text=f"Error: {str(e)}", text_color="red")
     
     def start_update_thread(self):
-        if not self.app.game_config.GamePath:
+        if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
             self.display_status(text="Set folder first!", text_color="red")
+            self.app.btn_launch.configure(state="disabled")
             return
         threading.Thread(target=self.perform_update, daemon=True).start()
     
     def perform_update(self):
+        self.app.btn_update.configure(state="disabled")
+        self.app.btn_launch.configure(state="disabled")
         self.app.after(0, lambda: self.toggle_progress(True))
         self.display_status(text="Fetching latest manifest...", text_color="yellow")
         self.app.progress_bar.set(0)
         
         if not check_game_executable(self.app.game_config.GamePath):
             self.display_status(text="Set folder first!", text_color="red")
+            self.app.btn_update.configure(state="normal")
+            self.app.btn_launch.configure(state="disabled")
             self.app.after(0, lambda: self.toggle_progress(False))
             return
         
@@ -63,14 +70,16 @@ class UpdateManager:
         try:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
-            current_manifest = load_manifest_memory(response.content)
+            self.app.remote_game_manifest = load_manifest_memory(response.content)
         except Exception as e:
             self.app.after(0, lambda: self.toggle_progress(False))
             self.app.after(0, lambda: self.display_status(text="Could not fetch manifest.", text_color="red"))
+            self.app.btn_update.configure(state="normal")
+            self.app.btn_launch.configure(state="normal")
             return
 
         self.display_status(text="Downloading files...", text_color="yellow", stay=True)
-        files_to_download = current_manifest.Files
+        files_to_download = self.app.remote_game_manifest.Files
         total_bytes = sum(getattr(f, 'Size', 0) for f in files_to_download)
         downloaded_so_far = 0 
         
@@ -99,13 +108,17 @@ class UpdateManager:
                 os.rename(temp_dest, dest)
                 self.app.after(0, lambda n=asset.OriginalFileName: self.display_status(text=f"Completed: {n}"))
 
-            save_manifest(current_manifest, MANIFEST_PATH)
-            self.app.game_manifest = current_manifest
+            save_manifest(self.app.remote_game_manifest, MANIFEST_PATH)
+            self.app.installed_game_manifest = self.app.remote_game_manifest
             self.app.after(0, lambda: self.toggle_progress(False))
             self.app.after(0, lambda: self.display_status(text="Update Complete!", text_color="green"))
+            self.app.setting_manager.update_installed_patch_text()
             
         except Exception as e:
             print(f"Update error: {e}")
             self.app.after(0, lambda: self.toggle_progress(False))
             self.app.after(0, lambda: self.display_status(text="Update failed", text_color="red"))
+        
+        self.app.btn_update.configure(state="normal")
+        self.app.btn_launch.configure(state="normal")
             

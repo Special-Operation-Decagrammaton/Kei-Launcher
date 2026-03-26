@@ -1,5 +1,6 @@
 from pathlib import Path
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, Field
 from enum import Enum
 
 class Language(Enum):
@@ -18,11 +19,11 @@ class Branch(Enum):
         return [member.value for member in cls]
 
 class LauncherConfig(BaseModel):
-    GamePath: Path
+    GamePath: Optional[Path] = Field(default=None)
     Language: Language
     Branch: Branch
     BuildTag: BuildTag
-    CloseOnLaunch: bool
+    CloseOnLaunch: Optional[bool] = True
     
 def load_config(file_path: Path) -> LauncherConfig:
     return LauncherConfig.model_validate_json(file_path.read_text())

@@ -13,8 +13,9 @@ class LaunchManager:
         
     def setup_window(self):
         self.app.title("BA TL Launcher")
-        self.center_window(800, 600)
+        self.center_window(960, 640)
         self.app.resizable(False, False)
+        self.app._set_appearance_mode("dark")
         
     def center_window(self, width: int, height: int):
         screen_width = self.app.winfo_screenwidth()
@@ -41,8 +42,9 @@ class LaunchManager:
         webbrowser.open("https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher")
             
     def launch_game(self):
-        if not self.app.game_config.GamePath.exists():
+        if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
             self.app.update_manager.display_status(text="Please set Game Folder first!", text_color="orange")
+            self.app.btn_launch.configure(state="disabled")
             return
         
         bat_path = self.app.game_config.GamePath / "run.bat"

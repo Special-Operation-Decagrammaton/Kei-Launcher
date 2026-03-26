@@ -12,6 +12,9 @@ def check_new_update(launcher_config: LauncherConfig, old_game_manifest: GameMan
     old_files_map = {f.Path: f for f in old_game_manifest.Files}
     
     for asset in new_game_manifest.Files:
+        if launcher_config.GamePath is None or not launcher_config.GamePath.exists():
+            return "Please set Game Folder first!", "orange"
+        
         full_path_asset = launcher_config.GamePath / asset.Path
         
         if not full_path_asset.exists():
