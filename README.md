@@ -7,6 +7,8 @@ An automated patcher for Blue Archive JP localization.
 
 `BA-TL-Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [BA-TL-Assets](https://github.com/Special-Operation-Decagrammaton/BA-TL-Assets) repository.
 
+<img width="959" height="634" alt="image" src="https://github.com/user-attachments/assets/020ac4e4-1ac7-4616-8e98-d85793a39106" />
+
 ---
 
 ## Technical Workflow
