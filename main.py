@@ -42,7 +42,7 @@ class App(ctk.CTk):
 
         # Title (Top Center)
         main_title_font = ctk.CTkFont(family="Roboto", size=46, weight="bold", underline=True)
-        self.main_title = ctk.CTkLabel(self, text="BA TL Launcher", font=main_title_font)
+        self.main_title = ctk.CTkLabel(self, text="BA TL Launcher", font=main_title_font, fg_color="transparent")
         self.main_title.pack(pady=(20, 30))
 
         # Main Layout Body
@@ -67,7 +67,7 @@ class App(ctk.CTk):
         )
         self.installed_container.pack(fill="x", pady=(0, 5), padx=5)
 
-        ctk.CTkLabel(self.installed_container, text="Installed Patch", font=label_font).pack(pady=(10, 0))
+        ctk.CTkLabel(self.installed_container, text="Installed Patch", fg_color="transparent", font=label_font).pack(pady=(10, 0))
         self.installed_date = ctk.CTkLabel(self.installed_container, text="-", font=("Roboto", 14), text_color="white")
         self.installed_date.pack()
 
@@ -90,7 +90,7 @@ class App(ctk.CTk):
         )
         self.latest_container.pack(fill="x", pady=5, padx=5)
 
-        ctk.CTkLabel(self.latest_container, text="Latest Patch", font=label_font).pack(pady=(10, 0))
+        ctk.CTkLabel(self.latest_container, text="Latest Patch", fg_color="transparent", font=label_font).pack(pady=(10, 0))
         self.latest_date = ctk.CTkLabel(self.latest_container, text="-", font=("Roboto", 14), text_color="white")
         self.latest_date.pack()
 
@@ -188,6 +188,7 @@ class App(ctk.CTk):
             self.update_manager.check_updates()
             
 if __name__ == "__main__":
+    ctk.set_appearance_mode("dark")
     if is_admin():
         app = App()
         app.mainloop()

@@ -11,11 +11,10 @@ class LaunchManager:
     def __init__(self, app: AppInterface):
         self.app = app
         
-    def setup_window(self):
+    def setup_window(self) -> None:
         self.app.title("BA TL Launcher")
         self.center_window(960, 640)
         self.app.resizable(False, False)
-        self.app._set_appearance_mode("dark")
         
     def center_window(self, width: int, height: int):
         screen_width = self.app.winfo_screenwidth()
