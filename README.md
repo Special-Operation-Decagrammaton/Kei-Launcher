@@ -7,6 +7,14 @@ An automated patcher for Blue Archive JP localization.
 
 `BA-TL-Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [BA-TL-Assets](https://github.com/Special-Operation-Decagrammaton/BA-TL-Assets) repository.
 
+> [!WARNING]
+> **UNOFFICIAL TOOL & BAN RISK**
+> This is a fan-made utility and is **not** affiliated with Nexon, NAT Games, or Yostar. 
+> 
+> * **Account Safety:** Modifying game files is a violation of most Terms of Service. Use of this tool carries a risk of account suspension or permanent ban.
+> * **Liability:** By using this software, you agree that the developers of `BA-TL-Launcher` are not responsible for any loss of data or account access.
+> * **Scope:** This tool only modifies localization assets; it does not bypass anti-cheat or modify game logic.
+
 <img width="959" height="634" alt="image" src="https://github.com/user-attachments/assets/020ac4e4-1ac7-4616-8e98-d85793a39106" />
 
 ---
@@ -39,8 +47,3 @@ The launcher is part of a multi-stage localization pipeline:
 1. Download `BA_TL_Launcher_linux` from [Releases](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/releases).
 2. Set execution permissions: `chmod +x BA_TL_Launcher_linux`
 3. Execute the binary.
-
-## Disclaimer
-- This is an unofficial fan-made tool and is not affiliated with Nexon, NAT Games, or Yostar.
-- Modifying game files may carry a risk of account suspension.
-- This utility does not distribute game binaries; it only modifies text-based assets.

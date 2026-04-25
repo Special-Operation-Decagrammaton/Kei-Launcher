@@ -59,9 +59,10 @@ jobs:
           main.py
 
     - name: Upload release asset
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: dist/BA_TL_Launcher_${{ matrix.os }}${{ matrix.suffix }}
         name: ${{ github.event.inputs.release-name }}
         tag_name: ${{ github.event.inputs.release-tag }}
+        generate_release_notes: true
