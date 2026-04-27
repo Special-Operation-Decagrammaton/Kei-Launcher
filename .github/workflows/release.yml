@@ -52,7 +52,7 @@ jobs:
       run: |
         pyinstaller --noconsole --onefile \
           --icon="${{ matrix.icon }}" \
-          --name "BA_TL_Launcher_${{ matrix.os }}" \
+          --name "Kei_Launcher_${{ matrix.os }}" \
           --add-data "asset${{ matrix.sep }}asset" \
           --collect-all customtkinter \
           --clean \
@@ -62,7 +62,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        files: dist/BA_TL_Launcher_${{ matrix.os }}${{ matrix.suffix }}
+        files: dist/Kei_Launcher_${{ matrix.os }}${{ matrix.suffix }}
         name: ${{ github.event.inputs.release-name }}
         tag_name: ${{ github.event.inputs.release-tag }}
         generate_release_notes: true
