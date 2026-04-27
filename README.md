@@ -1,21 +1,17 @@
-# BA-TL-Launcher
+# Kei Launcher
 
-An automated patcher for Blue Archive JP localization.
+[![Build Status](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/actions/workflows/build.yml/badge.svg)](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/actions)
+[![Latest Release](https://img.shields.io/github/v/release/Special-Operation-Decagrammaton/Kei-Launcher)](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/releases)
 
-[![Build Status](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/actions/workflows/build.yml/badge.svg)](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/actions)
-[![Latest Release](https://img.shields.io/github/v/release/Special-Operation-Decagrammaton/BA-TL-Launcher)](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/releases)
-
-`BA-TL-Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [BA-TL-Assets](https://github.com/Special-Operation-Decagrammaton/BA-TL-Assets) repository.
+`Kei Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [BA-TL-Assets](https://github.com/Special-Operation-Decagrammaton/BA-TL-Assets) repository.
 
 > [!WARNING]
 > **UNOFFICIAL TOOL & BAN RISK**
 > This is a fan-made utility and is **not** affiliated with Nexon, NAT Games, or Yostar. 
 > 
 > * **Account Safety:** Modifying game files is a violation of most Terms of Service. Use of this tool carries a risk of account suspension or permanent ban.
-> * **Liability:** By using this software, you agree that the developers of `BA-TL-Launcher` are not responsible for any loss of data or account access.
+> * **Liability:** By using this software, you agree that the developers of `Kei Launcher` are not responsible for any loss of data or account access.
 > * **Scope:** This tool only modifies localization assets; it does not bypass anti-cheat or modify game logic.
-
-<img width="959" height="634" alt="image" src="https://github.com/user-attachments/assets/020ac4e4-1ac7-4616-8e98-d85793a39106" />
 
 ---
 
@@ -40,10 +36,10 @@ The launcher is part of a multi-stage localization pipeline:
 ## Installation
 
 ### Windows
-1. Download the latest `BA_TL_Launcher_windows.exe` from [Releases](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/releases).
+1. Download the latest `Kei_Launcher_windows.exe` from [Releases](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/releases).
 2. Execute the file and select your game installation directory.
 
 ### Linux
-1. Download `BA_TL_Launcher_linux` from [Releases](https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher/releases).
-2. Set execution permissions: `chmod +x BA_TL_Launcher_linux`
+1. Download `Kei_Launcher_linux` from [Releases](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/releases).
+2. Set execution permissions: `chmod +x Kei_Launcher_linux`
 3. Execute the binary.

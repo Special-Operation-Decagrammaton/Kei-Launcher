@@ -4,7 +4,7 @@ SETLOCAL
 SET VENV_PATH=.venv
 SET ICON_PATH=asset/kei.ico
 SET MAIN_FILE=main.py
-SET EXE_NAME=BA_TL_Launcher
+SET EXE_NAME=Kei_Launcher
 
 echo [1/4] Activating Virtual Environment...
 IF NOT EXIST %VENV_PATH%\Scripts\activate.bat (

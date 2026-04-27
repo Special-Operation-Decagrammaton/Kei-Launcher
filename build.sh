@@ -3,7 +3,7 @@
 VENV_PATH=".venv"
 ICON_PATH="asset/kei.png"
 MAIN_FILE="main.py"
-EXE_NAME="BA_TL_Launcher"
+EXE_NAME="Kei_Launcher"
 
 echo "[1/4] Activating Virtual Environment..."
 if [ ! -f "$VENV_PATH/bin/activate" ]; then

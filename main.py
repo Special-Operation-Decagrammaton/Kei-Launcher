@@ -1,5 +1,6 @@
 import customtkinter as ctk
 
+from config import VERSION
 from PIL import Image
 from lib.helper import resource_path
 from lib.permission import is_admin, run_admin
@@ -44,8 +45,19 @@ class App(ctk.CTk):
 
         # Title (Top Center)
         main_title_font = ctk.CTkFont(family="Roboto", size=46, weight="bold", underline=True)
-        self.main_title = ctk.CTkLabel(self, text="BA TL Launcher", font=main_title_font, fg_color="transparent")
+        self.main_title = ctk.CTkLabel(self, text="Kei Launcher", font=main_title_font, fg_color="transparent")
         self.main_title.pack(pady=(20, 30))
+
+        # Version (Top Right)
+        self.version_label = ctk.CTkLabel(self, text=f"v{VERSION}", font=("Roboto", 14), text_color="gray")
+        self.version_label.place(relx=1.0, rely=0.0, anchor="ne", x=-20, y=20)
+
+        self.btn_launcher_check = ctk.CTkButton(
+            self, text="Check Update", font=("Roboto", 12),
+            width=100, height=28, fg_color=BLUE_COLOR, hover_color=BLUE_HOVER,
+            command=self.update_manager.start_check_launcher_update_thread
+        )
+        self.btn_launcher_check.place(relx=1.0, rely=0.0, anchor="ne", x=-20, y=50)
 
         # Main Layout Body
         self.body_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -187,7 +199,8 @@ class App(ctk.CTk):
             self.setting_manager.set_branch_description(self.game_config.Branch.value)
         if self.installed_game_manifest is not None:
             self.setting_manager.update_installed_patch_text()
-            self.update_manager.start_check_updates_thread()
+        
+        self.update_manager.start_check_updates_thread()
             
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")

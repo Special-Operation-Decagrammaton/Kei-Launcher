@@ -2,10 +2,11 @@ import os
 import threading
 import requests
 
-from config import MANIFEST_PATH, REPO
+from config import MANIFEST_PATH, REPO, VERSION, LAUNCHER_REPO
 from pathlib import Path
 from lib.checker import check_game_executable, check_new_update
 from manager.interface import AppInterface
+from model.config import Branch
 from model.manifest import load_manifest_memory, save_manifest
 
 class UpdateManager:
@@ -31,8 +32,44 @@ class UpdateManager:
             
     def start_check_updates_thread(self):
         threading.Thread(target=self.check_updates, daemon=True).start()
+
+    def start_check_launcher_update_thread(self):
+        threading.Thread(target=self.check_launcher_update, daemon=True).start()
+    
+    def check_launcher_update(self):
+        self.app.after(0, lambda: self.display_status(text="Checking launcher version...", text_color="yellow"))
+            
+        url = f"https://api.github.com/repos/{LAUNCHER_REPO}/releases/latest"
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                latest_version = data.get("tag_name", "").lstrip('v')
+                
+                def is_newer(curr, late):
+                    try:
+                        curr_parts = [int(x) for x in curr.split('.')]
+                        late_parts = [int(x) for x in late.split('.')]
+                        return late_parts > curr_parts
+                    except:
+                        return late != curr
+
+                if latest_version and is_newer(VERSION, latest_version):
+                    self.app.after(0, lambda: self.display_status(
+                        text=f"New Launcher v{latest_version} available!", 
+                        text_color="cyan", stay=True
+                    ))
+                else:
+                    self.app.after(0, lambda: self.display_status(text="Launcher is up to date!", text_color="green"))
+            else:
+                self.app.after(0, lambda: self.display_status(text="Unable to check updates. Please check your connection.", text_color="red"))
+        except Exception as e:
+            self.app.after(0, lambda: self.display_status(text="Unable to check updates. Please check your connection.", text_color="red"))
     
     def check_updates(self):
+        if self.app.game_config.Branch == Branch.NONE:
+            self.app.after(0, lambda: self.display_status(text="No branch selected.", text_color="orange"))
+            return
         self.app.after(0, lambda: self.display_status(text="Checking manifest...", text_color="yellow"))
         url = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{self.app.game_config.Branch.value}/GameManifest.json"
         try:
@@ -49,6 +86,9 @@ class UpdateManager:
             self.app.after(0, lambda: self.display_status(text=f"Check failed: {str(e)}", text_color="red"))
     
     def start_update_thread(self):
+        if self.app.game_config.Branch == Branch.NONE:
+            self.display_status(text="Select a branch first!", text_color="red")
+            return
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
             self.display_status(text="Set folder first!", text_color="red")
             self.app.btn_launch.configure(state="disabled")
@@ -91,7 +131,7 @@ class UpdateManager:
                 dest = Path(self.app.game_config.GamePath) / asset.Path
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 temp_dest = dest.with_suffix(dest.suffix + ".tmp")
-                download_url = f"https://github.com/{REPO}/releases/download/{self.app.game_config.BuildTag.value}/{asset.Hash}"
+                download_url = f"https://github.com/{REPO}/releases/download/{self.app.game_config.Branch.value}/{asset.Hash}"
                 
                 self.app.after(0, lambda n=asset.OriginalFileName: self.display_status(text=f"Downloading: {n}", stay=True))
 

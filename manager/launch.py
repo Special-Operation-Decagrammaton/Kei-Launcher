@@ -38,7 +38,7 @@ class LaunchManager:
             print(f"Could not load window icon: {e}")
             
     def open_github_link(self):
-        webbrowser.open("https://github.com/Special-Operation-Decagrammaton/BA-TL-Launcher")
+        webbrowser.open("https://github.com/Special-Operation-Decagrammaton/Kei-Launcher")
             
     def launch_game(self):
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():

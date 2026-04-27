@@ -47,7 +47,7 @@ jobs:
       run: |
         pyinstaller --noconsole --onefile \
           --icon="${{ matrix.icon }}" \
-          --name "BA_TL_Launcher" \
+          --name "Kei-Launcher" \
           --add-data "asset${{ matrix.sep }}asset" \
           --collect-all customtkinter \
           --clean \
@@ -56,5 +56,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: BA-TL-Launcher-${{ matrix.os }}
-        path: dist/BA_TL_Launcher${{ matrix.suffix }}
+        name: Kei-Launcher-${{ matrix.os }}
+        path: dist/Kei_Launcher${{ matrix.suffix }}

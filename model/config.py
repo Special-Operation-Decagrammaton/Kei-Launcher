@@ -6,13 +6,10 @@ from enum import Enum
 class Language(Enum):
     EN = "en"
 
-class BuildTag(Enum):
-    LATEST = "latest-build"
-    TRANSLATION = "translation-build"
-    
 class Branch(Enum):
-    MAIN = "main"
-    TRANSLATION = "translation"
+    NONE = "none"
+    EN_ORI = "en-ori"
+    EN_EXT = "en-ext"
     
     @classmethod
     def list_values(cls):
@@ -22,7 +19,6 @@ class LauncherConfig(BaseModel):
     GamePath: Optional[Path] = Field(default=None)
     Language: Language
     Branch: Branch
-    BuildTag: BuildTag
     CloseOnLaunch: Optional[bool] = True
     
 def load_config(file_path: Path) -> LauncherConfig:
