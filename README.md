@@ -16,7 +16,7 @@
 ---
 
 ## Technical Workflow
-1. **Manifest Retrieval:** Fetches the current `GameManifest.json` from the Assets repository.
+1. **Manifest Retrieval:** Fetches the current `PatchManifest.json` from the Assets repository.
 2. **Delta Check:** Compares local file hashes against the manifest to identify required updates.
 3. **Synchronization:** Downloads and applies modified assets based on user-selected branches.
 

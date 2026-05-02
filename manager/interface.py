@@ -2,7 +2,7 @@ from typing import Any, Protocol
 import customtkinter as ctk
 
 from model.config import LauncherConfig
-from model.manifest import GameManifest
+from model.manifest import PatchManifest
 
 class AppInterface(Protocol):
     launch_manager: Any
@@ -10,11 +10,11 @@ class AppInterface(Protocol):
     update_manager: Any
         
     game_config: LauncherConfig
-    installed_game_manifest: GameManifest
-    remote_game_manifest: GameManifest
+    installed_game_manifest: PatchManifest
+    remote_game_manifest: PatchManifest
     
     # UI Elements: Top Level
-    github_btn: ctk.CTkButton
+    settings_btn: ctk.CTkButton
     main_title: ctk.CTkLabel
     
     # UI Elements: Main Body Containers

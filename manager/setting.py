@@ -98,3 +98,7 @@ class SettingManager:
                 self.app.btn_launch.configure(state="normal")
             else:
                 self.app.update_manager.display_status(text="BlueArchive.exe and run.bat not found!", text_color="red")
+                
+    def toggle_close_on_launch(self, value: bool):
+        self.app.game_config.CloseOnLaunch = value
+        save_config(self.app.game_config, CONFIG_PATH)

@@ -22,6 +22,8 @@ class App(ctk.CTk):
         self.launch_manager.setup_icon()
         self.setting_manager.setup_configuration()
         
+
+        
         ORANGE_COLOR = "#a66100"
         ORANGE_HOVER = "#854d00"
         BLUE_COLOR = "#3b5b92"
@@ -31,33 +33,18 @@ class App(ctk.CTk):
         GITHUB_FOREGROUND = "#c2c2c2"
         BORDER_COLOR = "#2b4569"
         
-        # GitHub Logo (Top Left)
-        github_icon_path = resource_path("asset/github-logo.png")
-        image_data = Image.open(github_icon_path).convert("RGBA")
-        self.github_image = ctk.CTkImage(light_image=image_data, dark_image=image_data, size=(40, 40))
-        
-        self.github_btn = ctk.CTkButton(
-            self, image=self.github_image, text="",
-            width=60, height=60, fg_color=GITHUB_FOREGROUND, border_width=1, border_color=BORDER_COLOR,
-            hover_color=("gray70", "gray30"), command=self.launch_manager.open_github_link
+        # Settings Button (Top Left)
+        self.settings_btn = ctk.CTkButton(
+            self, text="⚙", font=ctk.CTkFont(family="Roboto", size=24, weight="bold"),
+            width=40, height=40, corner_radius=20, fg_color=BLUE_COLOR, hover_color=BLUE_HOVER,
+            command=self.launch_manager.show_settings_popup
         )
-        self.github_btn.place(x=20, y=20)
+        self.settings_btn.place(x=20, y=20)
 
         # Title (Top Center)
         main_title_font = ctk.CTkFont(family="Roboto", size=46, weight="bold", underline=True)
         self.main_title = ctk.CTkLabel(self, text="Kei Launcher", font=main_title_font, fg_color="transparent")
         self.main_title.pack(pady=(20, 30))
-
-        # Version (Top Right)
-        self.version_label = ctk.CTkLabel(self, text=f"v{VERSION}", font=("Roboto", 14), text_color="gray")
-        self.version_label.place(relx=1.0, rely=0.0, anchor="ne", x=-20, y=20)
-
-        self.btn_launcher_check = ctk.CTkButton(
-            self, text="Check Update", font=("Roboto", 12),
-            width=100, height=28, fg_color=BLUE_COLOR, hover_color=BLUE_HOVER,
-            command=self.update_manager.start_check_launcher_update_thread
-        )
-        self.btn_launcher_check.place(relx=1.0, rely=0.0, anchor="ne", x=-20, y=50)
 
         # Main Layout Body
         self.body_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -163,9 +150,9 @@ class App(ctk.CTk):
         self.btn_update = ctk.CTkButton(self.col_right, text="Install / Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_update_thread)
         self.btn_update.pack(pady=5)
         
-        self.btn_original = ctk.CTkButton(self.col_right, text="Install Original Patch", font=("Roboto", 14), **orange_style)
+        self.btn_original = ctk.CTkButton(self.col_right, text="Uninstall Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_uninstall_thread)
         self.btn_original.pack_forget()
-        # self.btn_original.pack(pady=5)
+        self.btn_original.pack(pady=5)
 
         # Footer Section
         self.footer_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -200,13 +187,22 @@ class App(ctk.CTk):
         if self.installed_game_manifest is not None:
             self.setting_manager.update_installed_patch_text()
         
-        self.update_manager.start_check_updates_thread()
+        # Start update check chain
+        self.update_manager.start_check_launcher_update_thread(on_complete=self.update_manager.start_check_updates_thread)
+
             
 if __name__ == "__main__":
+    import sys
+    from lib.permission import is_admin, run_admin
+    
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
-    if is_admin():
-        app = App()
-        app.mainloop()
-    else:
-        run_admin()
+    
+    if not is_admin():
+        if not run_admin():
+            sys.exit(0)
+        else:
+            sys.exit(0)
+            
+    app = App()
+    app.mainloop()
