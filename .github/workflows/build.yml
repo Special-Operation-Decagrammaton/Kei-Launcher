@@ -47,7 +47,7 @@ jobs:
       run: |
         pyinstaller --noconsole --onefile \
           --icon="${{ matrix.icon }}" \
-          --name "Kei-Launcher" \
+          --name "Kei_Launcher" \
           --add-data "asset${{ matrix.sep }}asset" \
           --collect-all customtkinter \
           --clean \
