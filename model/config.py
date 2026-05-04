@@ -10,6 +10,7 @@ class Branch(Enum):
     NONE = "none"
     EN_ORI = "en-ori"
     EN_EXT = "en-ext"
+    PT_BR = "pt-br"
     
     @classmethod
     def list_values(cls):

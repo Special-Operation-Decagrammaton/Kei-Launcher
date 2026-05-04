@@ -61,7 +61,8 @@ class SettingManager:
         descriptions = {
             Branch.NONE: "No translation branch selected.",
             Branch.EN_ORI: "Global English translation only.",
-            Branch.EN_EXT: "Global English translation with community additions."
+            Branch.EN_EXT: "Global English translation with community additions.",
+            Branch.PT_BR: "Português (Brasil) translation."
         }
         new_description = descriptions.get(selected_branch, "Select a branch to see details.")
         self.app.branch_info_text.configure(text=new_description)
