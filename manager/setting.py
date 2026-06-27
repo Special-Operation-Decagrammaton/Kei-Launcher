@@ -8,6 +8,7 @@ from lib.checker import check_game_executable
 from manager.interface import AppInterface
 from model.config import Branch, Language, LauncherConfig, load_config, save_config
 from model.manifest import load_manifest
+from model.i18n import t, set_language
 
 class SettingManager:
     def __init__(self, app: AppInterface):
@@ -59,13 +60,19 @@ class SettingManager:
     def set_branch_description(self, branch_str: str):
         selected_branch = Branch(branch_str)
         descriptions = {
-            Branch.NONE: "No translation branch selected.",
-            Branch.EN_ORI: "Global English translation only.",
-            Branch.EN_EXT: "Global English translation with community additions.",
-            # Branch.PT_BR: "Português (Brasil) translation."
+            Branch.NONE: t("desc_none"),
+            Branch.EN_ORI: t("desc_en_ori"),
+            Branch.EN_EXT: t("desc_en_ext"),
+            Branch.PT_BR: t("desc_pt_br"),
         }
-        new_description = descriptions.get(selected_branch, "Select a branch to see details.")
+        new_description = descriptions.get(selected_branch, t("branch_select_hint"))
         self.app.branch_info_text.configure(text=new_description)
+
+    def set_language(self, code: str):
+        self.app.game_config.Language = Language(code)
+        save_config(self.app.game_config, CONFIG_PATH)
+        set_language(code)
+        self.app.retranslate()
         
     def update_installed_patch_text(self):
         manifest = self.app.installed_game_manifest

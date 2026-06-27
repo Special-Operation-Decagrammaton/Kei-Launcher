@@ -8,6 +8,7 @@ class AppInterface(Protocol):
     launch_manager: Any
     setting_manager: Any
     update_manager: Any
+    android_manager: Any
         
     game_config: LauncherConfig
     installed_game_manifest: PatchManifest
@@ -25,14 +26,17 @@ class AppInterface(Protocol):
 
     # UI Elements: Patch Info (Left Column)
     installed_container: ctk.CTkFrame
+    installed_title: ctk.CTkLabel
     installed_date: ctk.CTkLabel
     installed_note: ctk.CTkTextbox
     
     latest_container: ctk.CTkFrame
+    latest_title: ctk.CTkLabel
     latest_date: ctk.CTkLabel
     latest_note: ctk.CTkTextbox
     
     # UI Elements: Branch Selection (Center Column)
+    branch_title: ctk.CTkLabel
     branch_option: ctk.CTkOptionMenu
     branch_info_text: ctk.CTkLabel
     
@@ -41,6 +45,7 @@ class AppInterface(Protocol):
     btn_check: ctk.CTkButton
     btn_update: ctk.CTkButton
     btn_original: ctk.CTkButton
+    btn_android: ctk.CTkButton
     
     # UI Elements: Footer & Progress
     footer_frame: ctk.CTkFrame

@@ -7,7 +7,9 @@ from lib.permission import is_admin, run_admin
 from manager.launch import LaunchManager
 from manager.setting import SettingManager
 from manager.update import UpdateManager
+from manager.android import AndroidManager
 from model.config import Branch
+from model.i18n import t, set_language
 
 class App(ctk.CTk):
     def __init__(self):
@@ -17,11 +19,18 @@ class App(ctk.CTk):
         self.launch_manager = LaunchManager(self)
         self.setting_manager = SettingManager(self)
         self.update_manager = UpdateManager(self)
-        
+        self.android_manager = AndroidManager(self)
+
         self.launch_manager.setup_window()
         self.launch_manager.setup_icon()
         self.setting_manager.setup_configuration()
-        
+
+        # Default language interface (saved config)
+        try:
+            set_language(self.game_config.Language.value if self.game_config else "en")
+        except Exception:
+            set_language("en")
+
         ORANGE_COLOR = "#a66100"
         ORANGE_HOVER = "#854d00"
         BLUE_COLOR = "#3b5b92"
@@ -30,7 +39,7 @@ class App(ctk.CTk):
         GREEN_HOVER = "#0e560e"
         GITHUB_FOREGROUND = "#c2c2c2"
         BORDER_COLOR = "#2b4569"
-        
+
         # Settings Button (Top Left)
         self.settings_btn = ctk.CTkButton(
             self, text="⚙", font=ctk.CTkFont(family="Roboto", size=24, weight="bold"),
@@ -58,38 +67,40 @@ class App(ctk.CTk):
 
         # Installed Container
         self.installed_container = ctk.CTkFrame(
-            self.col_left, 
-            fg_color="transparent", 
-            border_width=1, 
-            border_color=BORDER_COLOR, 
+            self.col_left,
+            fg_color="transparent",
+            border_width=1,
+            border_color=BORDER_COLOR,
             corner_radius=6
         )
         self.installed_container.pack(fill="x", pady=(0, 5), padx=5)
 
-        ctk.CTkLabel(self.installed_container, text="Installed Patch", fg_color="transparent", font=label_font).pack(pady=(10, 0))
+        self.installed_title = ctk.CTkLabel(self.installed_container, text=t("installed_patch"), fg_color="transparent", font=label_font)
+        self.installed_title.pack(pady=(10, 0))
         self.installed_date = ctk.CTkLabel(self.installed_container, text="-", font=("Roboto", 14), text_color="white")
         self.installed_date.pack()
 
         self.installed_note = ctk.CTkTextbox(
-            self.installed_container, width=250, height=90, font=("Roboto", 13), 
+            self.installed_container, width=250, height=90, font=("Roboto", 13),
             text_color="white", fg_color="transparent", border_width=0,
             activate_scrollbars=True, wrap="word"
         )
         self.installed_note.pack(pady=(0, 10), padx=10)
-        self.installed_note.insert("0.0", "No patch notes available.")
+        self.installed_note.insert("0.0", t("no_patch_notes"))
         self.installed_note.configure(state="disabled")
 
         # Latest Container
         self.latest_container = ctk.CTkFrame(
-            self.col_left, 
-            fg_color="transparent", 
-            border_width=1, 
-            border_color=BORDER_COLOR, 
+            self.col_left,
+            fg_color="transparent",
+            border_width=1,
+            border_color=BORDER_COLOR,
             corner_radius=6
         )
         self.latest_container.pack(fill="x", pady=5, padx=5)
 
-        ctk.CTkLabel(self.latest_container, text="Latest Patch", fg_color="transparent", font=label_font).pack(pady=(10, 0))
+        self.latest_title = ctk.CTkLabel(self.latest_container, text=t("latest_patch"), fg_color="transparent", font=label_font)
+        self.latest_title.pack(pady=(10, 0))
         self.latest_date = ctk.CTkLabel(self.latest_container, text="-", font=("Roboto", 14), text_color="white")
         self.latest_date.pack()
 
@@ -99,14 +110,15 @@ class App(ctk.CTk):
             activate_scrollbars=True, wrap="word"
         )
         self.latest_note.pack(pady=(0, 10), padx=10)
-        self.latest_note.insert("0.0", "No patch notes available.")
+        self.latest_note.insert("0.0", t("no_patch_notes"))
         self.latest_note.configure(state="disabled")
 
         # Column 2: Branch Selection (Center)
         self.col_center = ctk.CTkFrame(self.body_frame, fg_color="transparent")
         self.col_center.grid(row=0, column=1, sticky="n")
 
-        ctk.CTkLabel(self.col_center, text="Branch", font=label_font).pack(pady=(0, 10))
+        self.branch_title = ctk.CTkLabel(self.col_center, text=t("branch"), font=label_font)
+        self.branch_title.pack(pady=(0, 10))
         self.branch_option = ctk.CTkOptionMenu(
             self.col_center,
             values=Branch.list_values(),
@@ -119,9 +131,9 @@ class App(ctk.CTk):
         )
         self.branch_option.set(self.game_config.Branch.value if self.game_config else "Select Branch")
         self.branch_option.pack()
-        
+
         self.branch_info_text = ctk.CTkLabel(
-            self.col_center, text="Select a branch to see details.", 
+            self.col_center, text=t("branch_select_hint"),
             font=("Roboto", 14), text_color="gray", wraplength=200
         )
         self.branch_info_text.pack(pady=15)
@@ -133,7 +145,7 @@ class App(ctk.CTk):
         btn_w, btn_h = 248, 44
         # Set Folder (Blue)
         self.btn_folder = ctk.CTkButton(
-            self.col_right, text="Set Folder Location", font=("Roboto", 14),
+            self.col_right, text=t("set_folder"), font=("Roboto", 14),
             width=btn_w, height=btn_h, fg_color=BLUE_COLOR, hover_color=BLUE_HOVER,
             command=self.setting_manager.set_game_folder
         )
@@ -141,16 +153,24 @@ class App(ctk.CTk):
 
         # Orange Stack
         orange_style = {"width": btn_w, "height": btn_h, "fg_color": ORANGE_COLOR, "hover_color": ORANGE_HOVER}
-        
-        self.btn_check = ctk.CTkButton(self.col_right, text="Check Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_check_updates_thread)
+
+        self.btn_check = ctk.CTkButton(self.col_right, text=t("check_update"), font=("Roboto", 14), **orange_style, command=self.update_manager.start_check_updates_thread)
         self.btn_check.pack(pady=5)
-        
-        self.btn_update = ctk.CTkButton(self.col_right, text="Install / Update Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_update_thread)
+
+        self.btn_update = ctk.CTkButton(self.col_right, text=t("install_update"), font=("Roboto", 14), **orange_style, command=self.update_manager.start_update_thread)
         self.btn_update.pack(pady=5)
-        
-        self.btn_original = ctk.CTkButton(self.col_right, text="Uninstall Patch", font=("Roboto", 14), **orange_style, command=self.update_manager.start_uninstall_thread)
+
+        self.btn_original = ctk.CTkButton(self.col_right, text=t("uninstall"), font=("Roboto", 14), **orange_style, command=self.update_manager.start_uninstall_thread)
         self.btn_original.pack_forget()
         self.btn_original.pack(pady=5)
+
+        # Deploy to Android (Blue) -- use the branch selected
+        self.btn_android = ctk.CTkButton(
+            self.col_right, text=t("deploy_android"), font=("Roboto", 14),
+            width=btn_w, height=btn_h, fg_color=BLUE_COLOR, hover_color=BLUE_HOVER,
+            command=self.android_manager.start_deploy
+        )
+        self.btn_android.pack(pady=(15, 5))
 
         # Footer Section
         self.footer_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -159,17 +179,17 @@ class App(ctk.CTk):
         # Download/Progress (Bottom Left)
         self.progress_container = ctk.CTkFrame(self.footer_frame, fg_color="transparent")
         self.progress_container.pack(side="left", fill="x", expand=True, padx=(0, 10))
-        
+
         self.status_label = ctk.CTkLabel(self.progress_container, text="", text_color="orange", font=("Roboto", 15, "bold"))
         self.status_label.pack_forget()
-        
+
         self.progress_bar = ctk.CTkProgressBar(self.progress_container, height=18, width=550)
         self.progress_bar.set(0)
         self.progress_bar.pack_forget()
 
         # Launch Button (Bottom Right)
         self.btn_launch = ctk.CTkButton(
-            self.footer_frame, text="Launch", 
+            self.footer_frame, text=t("launch"),
             width=240, height=72, font=("Roboto", 32, "bold"),
             fg_color=GREEN_COLOR, hover_color=GREEN_HOVER,
             command=self.launch_manager.launch_game
@@ -178,29 +198,43 @@ class App(ctk.CTk):
 
         if not self.game_config.GamePath or not self.game_config.GamePath.exists():
             self.status_label.pack(side="top", pady=(0, 5))
-            self.status_label.configure(text="Please set Game Folder first!", text_color="orange")
+            self.status_label.configure(text=t("set_folder_first"), text_color="orange")
             self.btn_launch.configure(state="disabled")
         if self.game_config and self.game_config.Branch.value != None:
             self.setting_manager.set_branch_description(self.game_config.Branch.value)
         if self.installed_game_manifest is not None:
             self.setting_manager.update_installed_patch_text()
-        
+
         # Start update check chain
         self.update_manager.start_check_launcher_update_thread(on_complete=self.update_manager.start_check_updates_thread)
 
-            
+    def retranslate(self):
+        # Reapply the interface text in the current language
+        self.installed_title.configure(text=t("installed_patch"))
+        self.latest_title.configure(text=t("latest_patch"))
+        self.branch_title.configure(text=t("branch"))
+        self.btn_folder.configure(text=t("set_folder"))
+        self.btn_check.configure(text=t("check_update"))
+        self.btn_update.configure(text=t("install_update"))
+        self.btn_original.configure(text=t("uninstall"))
+        self.btn_android.configure(text=t("deploy_android"))
+        self.btn_launch.configure(text=t("launch"))
+        if self.game_config and self.game_config.Branch is not None:
+            self.setting_manager.set_branch_description(self.game_config.Branch.value)
+
+
 if __name__ == "__main__":
     import sys
     from lib.permission import is_admin, run_admin
-    
+
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
-    
+
     if not is_admin():
         if not run_admin():
             sys.exit(0)
         else:
             sys.exit(0)
-            
+
     app = App()
     app.mainloop()
