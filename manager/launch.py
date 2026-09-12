@@ -48,7 +48,7 @@ class LaunchManager:
             
     def launch_game(self):
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
-            self.app.update_manager.display_status(text="Please set Game Folder first!", text_color="orange")
+            self.app.update_manager.display_status(text=t("set_folder_first"), text_color="orange")
             self.app.btn_launch.configure(state="disabled")
             return
         
@@ -66,7 +66,7 @@ class LaunchManager:
                 else:
                     self.app.update_manager.display_status(text="Launch error.", text_color="red")
         else:
-            self.app.update_manager.display_status(text="BlueArchive.exe and run.bat not found!", text_color="red")
+            self.app.update_manager.display_status(text=t("st_check_fail"), text_color="red")
             
     def show_settings_popup(self):
         if hasattr(self, 'settings_popup') and self.settings_popup.winfo_exists():

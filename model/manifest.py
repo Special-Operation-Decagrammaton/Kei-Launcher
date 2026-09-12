@@ -65,4 +65,4 @@ def load_manifest(file_path: Path) -> PatchManifest:
 
 def save_manifest(config: PatchManifest, file_path: Path) -> None:
     json_data = config.model_dump_json(indent=4)
-    file_path.write_text(json_data)
+    file_path.write_text(json_data, encoding="utf-8")

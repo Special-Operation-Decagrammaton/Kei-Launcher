@@ -10,6 +10,7 @@ from lib.image_patcher import ImagePatcher
 from manager.interface import AppInterface
 from model.config import Branch
 from model.manifest import load_manifest_memory, save_manifest
+from model.i18n import t
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
@@ -177,9 +178,9 @@ class UpdateManager:
 
     def check_updates(self):
         if self.app.game_config.Branch == Branch.NONE:
-            self.app.after(0, lambda: self.display_status(text="Select a branch first!", text_color="red"))
+            self.app.after(0, lambda: self.display_status(text=t("st_select_branch"), text_color="red"))
             return
-        self.app.after(0, lambda: self.display_status(text="Checking manifest...", text_color="white"))
+        self.app.after(0, lambda: self.display_status(text=t("st_checking"), text_color="white"))
         
         manifest = self.fetch_combined_manifest(self.app.game_config.Branch.value)
         if manifest:
@@ -188,14 +189,14 @@ class UpdateManager:
             self.app.after(0, lambda: self.display_status(text=textMsg, text_color=textColor))
             self.app.after(0, self.app.setting_manager.update_latest_patch_text)
         else:
-            self.app.after(0, lambda: self.display_status(text="Failed to fetch manifest.", text_color="red"))
+            self.app.after(0, lambda: self.display_status(text=t("st_fetch_fail"), text_color="red"))
     
     def start_update_thread(self):
         if self.app.game_config.Branch == Branch.NONE:
-            self.display_status(text="Select a branch first!", text_color="red")
+            self.display_status(text=t("st_select_branch"), text_color="red")
             return
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
-            self.display_status(text="Set folder first!", text_color="red")
+            self.display_status(text=t("st_set_folder"), text_color="red")
             self.app.btn_launch.configure(state="disabled")
             return
         threading.Thread(target=self.perform_update, daemon=True).start()
@@ -211,7 +212,7 @@ class UpdateManager:
         self.app.progress_bar.set(0)
         
         if not check_game_executable(self.app.game_config.GamePath):
-            self.display_status(text="Set folder first!", text_color="red")
+            self.display_status(text=t("st_set_folder"), text_color="red")
             self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
             self.app.after(0, lambda: self.app.btn_launch.configure(state="disabled"))
             self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
@@ -222,7 +223,7 @@ class UpdateManager:
         manifest = self.fetch_combined_manifest(self.app.game_config.Branch.value)
         if not manifest:
             self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text="Could not fetch manifest.", text_color="red"))
+            self.app.after(0, lambda: self.display_status(text=t("st_fetch_fail"), text_color="red"))
             self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
             self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
             self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
@@ -316,13 +317,13 @@ class UpdateManager:
             save_manifest(self.app.remote_game_manifest, MANIFEST_PATH)
             self.app.installed_game_manifest = self.app.remote_game_manifest
             self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text="Update Complete!", text_color="green"))
+            self.app.after(0, lambda: self.display_status(text=t("st_update_done"), text_color="green"))
             self.app.setting_manager.update_installed_patch_text()
             
         except Exception as e:
             print(f"{e}")
             self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text="Update failed", text_color="red"))
+            self.app.after(0, lambda: self.display_status(text=t("st_update_fail"), text_color="red"))
         
         self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
         self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
@@ -332,7 +333,7 @@ class UpdateManager:
 
     def start_uninstall_thread(self):
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
-            self.display_status(text="Set folder first!", text_color="red")
+            self.display_status(text=t("st_set_folder"), text_color="red")
             self.app.btn_launch.configure(state="disabled")
             return
         threading.Thread(target=self.perform_uninstall, daemon=True).start()
@@ -395,13 +396,13 @@ class UpdateManager:
                 os.remove(MANIFEST_PATH)
             self.app.installed_game_manifest = None
             self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text="Uninstall Complete!", text_color="green"))
+            self.app.after(0, lambda: self.display_status(text=t("st_uninstall_done"), text_color="green"))
             self.app.setting_manager.update_installed_patch_text()
             
         except Exception as e:
             print(f"{e}")
             self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text="Uninstall failed", text_color="red"))
+            self.app.after(0, lambda: self.display_status(text=t("st_uninstall_fail"), text_color="red"))
         
         self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
         self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))

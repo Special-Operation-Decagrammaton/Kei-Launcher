@@ -5,7 +5,6 @@ from PIL import Image
 from lib.helper import resource_path
 
 class KeiChan:
-
     IMG_W, IMG_H = 64, 94
     CLICKS_PER_CHANGE = 4
 
@@ -41,6 +40,10 @@ class KeiChan:
     def attach(self, parent):
         if not self.ok:
             return
+            
+        if self.lbl is not None and self.lbl.winfo_exists():
+            self.lbl.destroy()
+            
         self.lbl = ctk.CTkLabel(parent, text="", image=self.faces.get(self.SEQUENCE[self.step]), fg_color="transparent")
         self.lbl.place(relx=1.0, rely=1.0, x=-6, y=-6, anchor="se")
         self.lbl.bind("<Button-1>", lambda e: self._on_click())
@@ -75,7 +78,6 @@ class KeiChan:
                 self.clicks_disabled = True
                 
                 job1 = self.app.after(1000, lambda: self._play(self.AUDIO_1))
-                
                 job2 = self.app.after(3000, self._go_to_step6)
                 
                 self._jobs.extend([job1, job2])
@@ -121,8 +123,11 @@ class KeiChan:
 
     def _play(self, wav):
         path = resource_path(os.path.join("asset", "kei-chan", wav))
-        try:
-            import winsound
-            winsound.PlaySound(path, winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NODEFAULT)
-        except Exception:
-            pass
+        if os.path.exists(path):
+            try:
+                import platform
+                if platform.system() == "Windows":
+                    import winsound
+                    winsound.PlaySound(path, winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NODEFAULT)
+            except Exception:
+                pass
