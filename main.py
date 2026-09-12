@@ -33,7 +33,7 @@ class App(ctk.CTk):
         except Exception:
             set_language("en")
 
-        # Outside of --ptbr, do not keep the pt-br branch active (also reset in memory, and not saved in the config)
+        # Outside of --ptbr, do not keep the pt-br branch active.
         if not ptbr and self.game_config and self.game_config.Branch == Branch.PT_BR:
             self.game_config.Branch = Branch.NONE
 
@@ -125,7 +125,7 @@ class App(ctk.CTk):
 
         self.branch_title = ctk.CTkLabel(self.col_center, text=t("branch"), font=label_font)
         self.branch_title.pack(pady=(0, 10))
-        # Outside of --ptbr, it hides pt-br branch from the branch selector
+        # Outside of --ptbr, it hides pt-br branch from the branch selector.
         _branch_values = Branch.list_values()
         if not ptbr:
             _branch_values = [b for b in _branch_values if b != "pt-br"]

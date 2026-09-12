@@ -15,6 +15,12 @@ def check_new_update(launcher_config: LauncherConfig, old_game_manifest: PatchMa
         if launcher_config.GamePath is None or not launcher_config.GamePath.exists():
             return "Please set Game Folder first!", "orange"
         
+        # If user disabled image downloading, skip checking image assets
+        if not getattr(launcher_config, "DownloadImages", True):
+            name_lower = (asset.OriginalFileName + " " + asset.FinalizedFileName + " " + asset.FolderPath).lower()
+            if "image" in name_lower or "banner" in name_lower or "imagefont" in name_lower:
+                continue
+        
         full_path_asset = launcher_config.GamePath / asset.FolderPath / asset.FinalizedFileName
         
         if not full_path_asset.exists():

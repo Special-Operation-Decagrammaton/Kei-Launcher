@@ -22,11 +22,12 @@ class LauncherConfig(BaseModel):
     Language: Language
     Branch: Branch
     CloseOnLaunch: Optional[bool] = True
+    DownloadImages: Optional[bool] = False
     
 def load_config(file_path: Path) -> LauncherConfig:
-    return LauncherConfig.model_validate_json(file_path.read_text())
+    return LauncherConfig.model_validate_json(file_path.read_text(encoding="utf-8"))
 
 def save_config(config: LauncherConfig, file_path: Path) -> None:
     json_data = config.model_dump_json(indent=4)
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    file_path.write_text(json_data)
+    file_path.write_text(json_data, encoding="utf-8")

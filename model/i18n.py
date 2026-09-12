@@ -24,7 +24,9 @@ _STRINGS = {
     "settings":        {"en": "Settings",              "pt": "Configurações"},
     "version":         {"en": "Version",               "pt": "Versão"},
     "close_on_launch": {"en": "Close Launcher on Game Launch", "pt": "Fechar o launcher ao iniciar o jogo"},
-    "github_repo":     {"en": "GitHub Repository",     "pt": "Repositório no GitHub"},
+    "download_images":      {"en": "Download Translated Images",    "pt": "Baixar Imagens Traduzidas"},
+    "download_images_hint": {"en": "(This may take a while to download)", "pt": "(Isso pode demorar um pouco para baixar)"},
+    "github_repo":          {"en": "GitHub Repository",             "pt": "Repositório no GitHub"},
     "launcher_check_update": {"en": "Check Update",    "pt": "Verificar Atualização"},
     "language":        {"en": "Language",              "pt": "Idioma"},
 

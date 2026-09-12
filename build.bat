@@ -15,7 +15,7 @@ IF NOT EXIST %VENV_PATH%\Scripts\activate.bat (
 call %VENV_PATH%\Scripts\activate.bat
 
 echo [2/4] Ensuring PyInstaller and Dependencies are present...
-pip install pyinstaller customtkinter requests
+pip install -r requirements.txt
 
 echo [3/4] Cleaning old build files...
 if exist dist rmdir /s /q dist
@@ -26,8 +26,9 @@ pyinstaller --noconsole --onefile ^
     --icon=%ICON_PATH% ^
     --name %EXE_NAME% ^
     --add-data "asset;asset" ^
-    --add-data "asset/kei-chan;asset/kei-chan" ^
     --collect-all customtkinter ^
+    --collect-all UnityPy ^
+    --collect-all PIL ^
     --clean ^
     %MAIN_FILE%
 
