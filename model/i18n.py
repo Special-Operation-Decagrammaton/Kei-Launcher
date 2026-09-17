@@ -1,5 +1,3 @@
-# Simple interface translation system: (EN/PT) - Default: English.
-
 _STRINGS = {
     # Main Interface:
     "installed_patch":    {"en": "Installed Patch",            "pt": "Patch Instalado"},
@@ -30,7 +28,6 @@ _STRINGS = {
     "launcher_check_update": {"en": "Check Update",    "pt": "Verificar Atualização"},
     "language":        {"en": "Language",              "pt": "Idioma"},
 
-
     # Status (update.py)
     "st_select_branch":  {"en": "Select a branch first!", "pt": "Selecione uma branch primeiro!"},
     "st_set_folder":     {"en": "Set folder first!", "pt": "Defina a pasta primeiro!"},
@@ -45,10 +42,8 @@ _STRINGS = {
     "st_uninstall_fail": {"en": "Uninstall failed", "pt": "Falha na desinstalação"},
 }
 
-# Language code to display name mapping.
 LANG_NAMES = {"en": "English", "pt": "Português"}
 NAME_TO_CODE = {v: k for k, v in LANG_NAMES.items()}
-
 
 class _I18N:
     def __init__(self):
@@ -67,17 +62,13 @@ class _I18N:
         except Exception:
             return text
 
-
 _i18n = _I18N()
-
 
 def t(key: str, **kwargs) -> str:
     return _i18n.t(key, **kwargs)
 
-
 def set_language(lang: str) -> None:
     _i18n.set(lang)
-
 
 def current_language() -> str:
     return _i18n.lang

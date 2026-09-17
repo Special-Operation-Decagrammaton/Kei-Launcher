@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/actions/workflows/build.yml/badge.svg)](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/actions)
 [![Latest Release](https://img.shields.io/github/v/release/Special-Operation-Decagrammaton/Kei-Launcher)](https://github.com/Special-Operation-Decagrammaton/Kei-Launcher/releases)
 
-`Kei Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [BA-TL-Assets](https://github.com/Special-Operation-Decagrammaton/BA-TL-Assets) repository.
+`Kei Launcher` is a GUI utility that synchronizes local game files with translated assets provided by the [TL-Assets](https://github.com/Special-Operation-Decagrammaton/Build-Assets) repository.
 
 > [!WARNING]
 > **UNOFFICIAL TOOL & BAN RISK**

@@ -54,7 +54,6 @@ def load_manifest_memory(content: bytes) -> PatchManifest:
                     Files=files_list
                 )
             else:
-                # Direct Image Patch Manifest
                 return PatchManifest.model_validate(data)
     except Exception:
         pass
