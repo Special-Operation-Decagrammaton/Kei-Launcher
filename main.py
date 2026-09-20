@@ -43,8 +43,15 @@ class App(ctk.CTk):
         BLUE_HOVER = "#2a4a75"
         GREEN_COLOR = "#137313"
         GREEN_HOVER = "#0e560e"
+        RED_COLOR = "#a62b2b"
+        RED_HOVER = "#852222"
         GITHUB_FOREGROUND = "#c2c2c2"
         BORDER_COLOR = "#2b4569"
+
+        self.GREEN_COLOR = GREEN_COLOR
+        self.GREEN_HOVER = GREEN_HOVER
+        self.RED_COLOR = RED_COLOR
+        self.RED_HOVER = RED_HOVER
 
         # Settings Button (Top Left)
         self.settings_btn = ctk.CTkButton(
@@ -221,7 +228,10 @@ class App(ctk.CTk):
         self.btn_check.configure(text=t("check_update"))
         self.btn_update.configure(text=t("install_update"))
         self.btn_original.configure(text=t("uninstall"))
-        self.btn_launch.configure(text=t("launch"))
+        if getattr(self.update_manager, "is_downloading", False):
+            self.btn_launch.configure(text=t("cancel"))
+        else:
+            self.btn_launch.configure(text=t("launch"))
         if self.game_config and self.game_config.Branch is not None:
             self.setting_manager.set_branch_description(self.game_config.Branch.value)
 

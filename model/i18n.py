@@ -10,6 +10,7 @@ _STRINGS = {
     "install_update":     {"en": "Install / Update Patch",     "pt": "Instalar / Atualizar Patch"},
     "uninstall":          {"en": "Uninstall Patch",            "pt": "Desinstalar Patch"},
     "launch":             {"en": "Launch",                     "pt": "Iniciar"},
+    "cancel":             {"en": "Cancel",                     "pt": "Cancelar"},
     "set_folder_first":   {"en": "Please set Game Folder first!", "pt": "Defina a pasta do jogo primeiro!"},
 
     # Branch Descriptions:
@@ -22,8 +23,8 @@ _STRINGS = {
     "settings":        {"en": "Settings",              "pt": "Configurações"},
     "version":         {"en": "Version",               "pt": "Versão"},
     "close_on_launch": {"en": "Close Launcher on Game Launch", "pt": "Fechar o launcher ao iniciar o jogo"},
-    "download_images":      {"en": "Download Translated Images",    "pt": "Baixar Imagens Traduzidas"},
-    "download_images_hint": {"en": "(This may take a while to download)", "pt": "(Isso pode demorar um pouco para baixar)"},
+    "download_images":      {"en": "Download English Image Patch",    "pt": "Baixar Patch de Imagens em Inglês"},
+    "download_images_hint": {"en": "(Downloading and patching may take a while)", "pt": "(O downloading e o patching podem demorar um pouco)"},
     "github_repo":          {"en": "GitHub Repository",             "pt": "Repositório no GitHub"},
     "launcher_check_update": {"en": "Check Update",    "pt": "Verificar Atualização"},
     "language":        {"en": "Language",              "pt": "Idioma"},
@@ -36,6 +37,8 @@ _STRINGS = {
     "st_no_updates":     {"en": "No updates found.", "pt": "Nenhuma atualização encontrada."},
     "st_check_fail":     {"en": "Check failed.", "pt": "Falha na verificação."},
     "st_downloading":    {"en": "Downloading files...", "pt": "Baixando arquivos..."},
+    "st_cancelling":     {"en": "Cancelling...", "pt": "Cancelando..."},
+    "st_cancelled":      {"en": "Download cancelled.", "pt": "Download cancelado."},
     "st_update_done":    {"en": "Update Complete!", "pt": "Atualização concluída!"},
     "st_update_fail":    {"en": "Update failed", "pt": "Falha na atualização"},
     "st_uninstall_done": {"en": "Uninstall Complete!", "pt": "Desinstalação concluída!"},

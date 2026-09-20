@@ -4,6 +4,7 @@ import re
 import json
 import zipfile
 import tempfile
+import shutil
 from pathlib import Path
 from PIL import Image
 
@@ -33,7 +34,7 @@ class ImagePatcher:
         return UNITYPY_AVAILABLE
 
     @staticmethod
-    def patch(game_path: Path, images_zip_path: Path, map_data: dict, on_progress=None) -> int:
+    def patch(game_path: Path, images_zip_path: Path, map_data: dict, on_progress=None, cancel_check=None) -> int:
         if not UNITYPY_AVAILABLE:
             raise RuntimeError("UnityPy is not installed.")
 
@@ -69,6 +70,8 @@ class ImagePatcher:
             patched_textures_count = 0
 
             for idx, (bundle_ref, texture_names) in enumerate(bundle_to_images.items(), 1):
+                if cancel_check and cancel_check():
+                    break
                 bundle_fn = Path(bundle_ref).name.lower()
                 bundle_file = exact_disk_bundles.get(bundle_fn)
 
@@ -88,7 +91,7 @@ class ImagePatcher:
 
                 if on_progress:
                     percent = idx / total_bundles
-                    on_progress(f"Patching: Translated Images ({idx}/{total_bundles})", percent)
+                    on_progress(f"Patching: English Images ({idx}/{total_bundles})", percent)
 
                 textures_to_apply = {}
                 for tex_name in texture_names:
@@ -123,6 +126,14 @@ class ImagePatcher:
                                 pass
 
                     if modified:
+                        # Create .bak backup of original bundle if not already present
+                        bak_file = bundle_file.with_suffix(bundle_file.suffix + ".bak")
+                        if not bak_file.exists():
+                            try:
+                                shutil.copy2(bundle_file, bak_file)
+                            except Exception as e:
+                                print(f"Failed to backup {bundle_file.name}: {e}")
+
                         temp_dest = bundle_file.with_suffix(bundle_file.suffix + ".tmp")
                         try:
                             with open(temp_dest, "wb") as f:
@@ -144,3 +155,74 @@ class ImagePatcher:
                     print(f"Error patching {bundle_file.name}: {e}")
 
             return patched_textures_count
+
+    @staticmethod
+    def has_backup(game_path: Path) -> bool:
+        if not game_path:
+            return False
+        try:
+            p = Path(game_path)
+            if not p.exists():
+                return False
+            base_streaming = p / "BlueArchive_Data" / "StreamingAssets"
+            bundles_dir = base_streaming / "AssetBundles"
+            if not bundles_dir.exists():
+                bundles_dir = base_streaming
+            if not bundles_dir.exists():
+                return False
+
+            for root, _, files in os.walk(bundles_dir):
+                for f in files:
+                    if f.lower().endswith(".bundle.bak"):
+                        return True
+        except Exception:
+            return False
+        return False
+
+    @staticmethod
+    def revert(game_path: Path, on_progress=None, cancel_check=None) -> int:
+        if not game_path:
+            return 0
+        try:
+            p = Path(game_path)
+            if not p.exists():
+                return 0
+            base_streaming = p / "BlueArchive_Data" / "StreamingAssets"
+            bundles_dir = base_streaming / "AssetBundles"
+            if not bundles_dir.exists():
+                bundles_dir = base_streaming
+            if not bundles_dir.exists():
+                return 0
+
+            bak_files = []
+            for root, _, files in os.walk(bundles_dir):
+                for f in files:
+                    if f.lower().endswith(".bundle.bak"):
+                        bak_files.append(Path(root) / f)
+
+            total_bak = len(bak_files)
+            if total_bak == 0:
+                return 0
+
+            reverted_count = 0
+            for idx, bak_file in enumerate(bak_files, 1):
+                if cancel_check and cancel_check():
+                    break
+
+                orig_bundle = bak_file.with_suffix("")
+                try:
+                    if orig_bundle.exists():
+                        os.remove(orig_bundle)
+                    os.rename(bak_file, orig_bundle)
+                    reverted_count += 1
+                except Exception as e:
+                    print(f"Failed to restore {bak_file.name}: {e}")
+
+                if on_progress:
+                    percent = idx / total_bak
+                    on_progress(f"Reverting: English Images ({idx}/{total_bak})", percent)
+
+            return reverted_count
+        except Exception as e:
+            print(f"Error in revert: {e}")
+            return 0
