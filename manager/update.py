@@ -18,6 +18,46 @@ class UpdateManager:
     def __init__(self, app: AppInterface):
         self.app = app
         self.status_timer = None
+        self.is_downloading = False
+        self.is_cancelled = False
+        self.current_response = None
+
+    def _set_launch_button_to_cancel(self):
+        self.app.btn_launch.configure(
+            text=t("cancel"),
+            fg_color=getattr(self.app, "RED_COLOR", "#a62b2b"),
+            hover_color=getattr(self.app, "RED_HOVER", "#852222"),
+            font=("Roboto", 26, "bold"),
+            command=self.cancel_download,
+            state="normal"
+        )
+
+    def _restore_launch_button(self):
+        can_launch = (
+            bool(self.app.game_config)
+            and self.app.game_config.GamePath is not None
+            and self.app.game_config.GamePath.exists()
+            and check_game_executable(self.app.game_config.GamePath)
+        )
+        self.app.btn_launch.configure(
+            text=t("launch"),
+            fg_color=getattr(self.app, "GREEN_COLOR", "#137313"),
+            hover_color=getattr(self.app, "GREEN_HOVER", "#0e560e"),
+            font=("Roboto", 32, "bold"),
+            command=self.app.launch_manager.launch_game,
+            state="normal" if can_launch else "disabled"
+        )
+
+    def cancel_download(self):
+        if not self.is_downloading:
+            return
+        self.is_cancelled = True
+        self.display_status(text=t("st_cancelling"), text_color="orange", stay=True)
+        if self.current_response:
+            try:
+                self.current_response.close()
+            except Exception:
+                pass
         
     def toggle_progress(self, show: bool):
         if show:
@@ -202,134 +242,206 @@ class UpdateManager:
         threading.Thread(target=self.perform_update, daemon=True).start()
     
     def perform_update(self):
+        self.is_downloading = True
+        self.is_cancelled = False
+        self.current_response = None
+
         self.app.after(0, lambda: self.app.btn_folder.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_check.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_update.configure(state="disabled"))
-        self.app.after(0, lambda: self.app.btn_launch.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_original.configure(state="disabled"))
+        self.app.after(0, lambda: self.app.branch_option.configure(state="disabled"))
+        self.app.after(0, self._set_launch_button_to_cancel)
         self.app.after(0, lambda: self.toggle_progress(True))
         self.display_status(text="Fetching latest manifest...", text_color="white")
         self.app.progress_bar.set(0)
-        
-        if not check_game_executable(self.app.game_config.GamePath):
-            self.display_status(text=t("st_set_folder"), text_color="red")
-            self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_launch.configure(state="disabled"))
-            self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
-            self.app.after(0, lambda: self.toggle_progress(False))
-            return
-        
-        r2_url = get_r2_url(self.app.game_config.Branch.value)
-        manifest = self.fetch_combined_manifest(self.app.game_config.Branch.value)
-        if not manifest:
-            self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text=t("st_fetch_fail"), text_color="red"))
-            self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_launch.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
-            return
-            
-        self.app.remote_game_manifest = manifest
 
-        self.display_status(text="Downloading translation files...", text_color="white", stay=True)
-        files_to_download = [f for f in self.app.remote_game_manifest.Files if not f.OriginalFileName.lower().endswith(".bundle")]
-        total_files = len(files_to_download)
-        total_bytes = sum(getattr(f, 'Size', 0) for f in files_to_download)
-        downloaded_so_far = 0 
-        
+        temp_dest = None
+        temp_zip = None
+
         try:
+            if not check_game_executable(self.app.game_config.GamePath):
+                self.display_status(text=t("st_set_folder"), text_color="red")
+                self.app.after(0, lambda: self.toggle_progress(False))
+                return
+
+            r2_url = get_r2_url(self.app.game_config.Branch.value)
+            manifest = self.fetch_combined_manifest(self.app.game_config.Branch.value)
+            if not manifest:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_fetch_fail"), text_color="red")
+                return
+
+            if self.is_cancelled:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_cancelled"), text_color="orange")
+                return
+
+            self.app.remote_game_manifest = manifest
+
+            self.display_status(text="Downloading translation files...", text_color="white", stay=True)
+            files_to_download = [f for f in self.app.remote_game_manifest.Files if not f.OriginalFileName.lower().endswith(".bundle")]
+            total_files = len(files_to_download)
+            total_bytes = sum(getattr(f, 'Size', 0) for f in files_to_download)
+            downloaded_so_far = 0 
+
             # 1. Download Text Translation Files from GitHub
             for idx, asset in enumerate(files_to_download):
+                if self.is_cancelled:
+                    break
+
                 dest = Path(self.app.game_config.GamePath) / asset.FolderPath / asset.FinalizedFileName
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 temp_dest = dest.with_suffix(dest.suffix + ".tmp")
-                
+
                 download_url = f"https://github.com/{REPO}/releases/download/{self.app.game_config.Branch.value}/{asset.Hash}"
                 display_name = asset.OriginalFileName
                 self.app.after(0, lambda n=display_name, c=idx+1, t=total_files: self.display_status(text=f"Downloading: {n} ({c}/{t})", stay=True))
 
-                with requests.get(download_url, headers=HEADERS, stream=True, timeout=15) as r:
-                    r.raise_for_status()
-                    with open(temp_dest, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=16384):
-                            if chunk:
-                                f.write(chunk)
-                                downloaded_so_far += len(chunk)
-                                if total_bytes > 0:
-                                    percent = downloaded_so_far / total_bytes
-                                    self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
-                
+                try:
+                    with requests.get(download_url, headers=HEADERS, stream=True, timeout=15) as r:
+                        self.current_response = r
+                        r.raise_for_status()
+                        with open(temp_dest, "wb") as f:
+                            for chunk in r.iter_content(chunk_size=16384):
+                                if self.is_cancelled:
+                                    break
+                                if chunk:
+                                    f.write(chunk)
+                                    downloaded_so_far += len(chunk)
+                                    if total_bytes > 0:
+                                        percent = downloaded_so_far / total_bytes
+                                        self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
+                finally:
+                    self.current_response = None
+
+                if self.is_cancelled:
+                    if temp_dest and os.path.exists(temp_dest):
+                        try:
+                            os.remove(temp_dest)
+                        except Exception:
+                            pass
+                    temp_dest = None
+                    break
+
                 if os.path.exists(dest):
                     os.remove(dest)
                 os.rename(temp_dest, dest)
+                temp_dest = None
                 self.app.after(0, lambda n=display_name: self.display_status(text=f"Completed: {n}"))
 
             # 2. Download and Inject Translated Images (if enabled)
-            if getattr(self.app.game_config, "DownloadImages", False) and r2_url:
+            if not self.is_cancelled and getattr(self.app.game_config, "DownloadImages", False) and r2_url:
                 map_url = f"{r2_url.rstrip('/')}/image_bundle_map.json"
                 zip_url = f"{r2_url.rstrip('/')}/images.zip"
-                
+
                 self.app.after(0, lambda: self.display_status(text="Fetching image map...", text_color="white", stay=True))
                 map_resp = requests.get(map_url, headers=HEADERS, timeout=10)
-                if map_resp.status_code == 200:
+                if not self.is_cancelled and map_resp.status_code == 200:
                     map_data = map_resp.json()
                     temp_zip = Path(tempfile.gettempdir()) / "ba_images_patch.zip"
-                    
-                    self.app.after(0, lambda: self.display_status(text="Downloading: Translated Images...", text_color="white", stay=True))
-                    with requests.get(zip_url, headers=HEADERS, stream=True, timeout=30) as r:
-                        r.raise_for_status()
-                        zip_total = int(r.headers.get('content-length', 0))
-                        zip_downloaded = 0
-                        with open(temp_zip, "wb") as zf:
-                            for chunk in r.iter_content(chunk_size=65536):
-                                if chunk:
-                                    zf.write(chunk)
-                                    zip_downloaded += len(chunk)
-                                    if zip_total > 0:
-                                        percent = zip_downloaded / zip_total
-                                        mb_cur = zip_downloaded / (1024 * 1024)
-                                        mb_tot = zip_total / (1024 * 1024)
-                                        self.app.after(0, lambda p=percent, c=mb_cur, t=mb_tot: (
-                                            self.app.progress_bar.set(p),
-                                            self.display_status(text=f"Downloading: Translated Images ({c:.1f}/{t:.1f} MB)", text_color="white", stay=True)
-                                        ))
 
-                    # Patch textures directly into local game bundles
-                    def update_patch_progress(status_text, percent):
+                    self.app.after(0, lambda: self.display_status(text="Downloading: English Images...", text_color="white", stay=True))
+                    try:
+                        with requests.get(zip_url, headers=HEADERS, stream=True, timeout=30) as r:
+                            self.current_response = r
+                            r.raise_for_status()
+                            zip_total = int(r.headers.get('content-length', 0))
+                            zip_downloaded = 0
+                            with open(temp_zip, "wb") as zf:
+                                for chunk in r.iter_content(chunk_size=65536):
+                                    if self.is_cancelled:
+                                        break
+                                    if chunk:
+                                        zf.write(chunk)
+                                        zip_downloaded += len(chunk)
+                                        if zip_total > 0:
+                                            percent = zip_downloaded / zip_total
+                                            mb_cur = zip_downloaded / (1024 * 1024)
+                                            mb_tot = zip_total / (1024 * 1024)
+                                            self.app.after(0, lambda p=percent, c=mb_cur, t=mb_tot: (
+                                                self.app.progress_bar.set(p),
+                                                self.display_status(text=f"Downloading: English Images ({c:.1f}/{t:.1f} MB)", text_color="white", stay=True)
+                                            ))
+                    finally:
+                        self.current_response = None
+
+                    if self.is_cancelled:
+                        if temp_zip and temp_zip.exists():
+                            try:
+                                os.remove(temp_zip)
+                            except Exception:
+                                pass
+                    else:
+                        # Patch textures directly into local game bundles
+                        def update_patch_progress(status_text, percent):
+                            self.app.after(0, lambda s=status_text: self.display_status(text=s, text_color="white", stay=True))
+                            self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
+
+                        ImagePatcher.patch(
+                            game_path=self.app.game_config.GamePath,
+                            images_zip_path=temp_zip,
+                            map_data=map_data,
+                            on_progress=update_patch_progress,
+                            cancel_check=lambda: self.is_cancelled
+                        )
+
+                        if temp_zip.exists():
+                            try:
+                                os.remove(temp_zip)
+                            except Exception:
+                                pass
+            elif not self.is_cancelled and not getattr(self.app.game_config, "DownloadImages", False):
+                # If image patch is disabled, revert any existing image backups to original Japanese
+                if ImagePatcher.has_backup(self.app.game_config.GamePath):
+                    def update_revert_progress(status_text, percent):
                         self.app.after(0, lambda s=status_text: self.display_status(text=s, text_color="white", stay=True))
                         self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
 
-                    ImagePatcher.patch(
+                    ImagePatcher.revert(
                         game_path=self.app.game_config.GamePath,
-                        images_zip_path=temp_zip,
-                        map_data=map_data,
-                        on_progress=update_patch_progress
+                        on_progress=update_revert_progress,
+                        cancel_check=lambda: self.is_cancelled
                     )
 
-                    if temp_zip.exists():
-                        try:
-                            os.remove(temp_zip)
-                        except Exception:
-                            pass
+            if self.is_cancelled:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_cancelled"), text_color="orange")
+            else:
+                save_manifest(self.app.remote_game_manifest, MANIFEST_PATH)
+                self.app.installed_game_manifest = self.app.remote_game_manifest
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_update_done"), text_color="green")
+                self.app.after(0, self.app.setting_manager.update_installed_patch_text)
 
-            save_manifest(self.app.remote_game_manifest, MANIFEST_PATH)
-            self.app.installed_game_manifest = self.app.remote_game_manifest
-            self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text=t("st_update_done"), text_color="green"))
-            self.app.setting_manager.update_installed_patch_text()
-            
         except Exception as e:
-            print(f"{e}")
-            self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text=t("st_update_fail"), text_color="red"))
-        
-        self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_launch.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
+            if self.is_cancelled:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_cancelled"), text_color="orange")
+            else:
+                print(f"{e}")
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_update_fail"), text_color="red")
+        finally:
+            if temp_dest and os.path.exists(temp_dest):
+                try:
+                    os.remove(temp_dest)
+                except Exception:
+                    pass
+            if temp_zip and os.path.exists(temp_zip):
+                try:
+                    os.remove(temp_zip)
+                except Exception:
+                    pass
+            self.current_response = None
+            self.is_downloading = False
+            self.is_cancelled = False
+            self.app.after(0, self._restore_launch_button)
+            self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
+            self.app.after(0, lambda: self.app.branch_option.configure(state="normal"))
 
     def start_uninstall_thread(self):
         if not self.app.game_config.GamePath or not self.app.game_config.GamePath.exists():
@@ -339,73 +451,122 @@ class UpdateManager:
         threading.Thread(target=self.perform_uninstall, daemon=True).start()
 
     def perform_uninstall(self):
+        self.is_downloading = True
+        self.is_cancelled = False
+        self.current_response = None
+
         self.app.after(0, lambda: self.app.btn_folder.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_check.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_update.configure(state="disabled"))
-        self.app.after(0, lambda: self.app.btn_launch.configure(state="disabled"))
         self.app.after(0, lambda: self.app.btn_original.configure(state="disabled"))
+        self.app.after(0, lambda: self.app.branch_option.configure(state="disabled"))
+        self.app.after(0, self._set_launch_button_to_cancel)
         self.app.after(0, lambda: self.toggle_progress(True))
         self.app.after(0, lambda: self.app.progress_bar.set(0))
-        
-        if not self.app.installed_game_manifest:
-            self.display_status(text="No patch installed to uninstall.", text_color="red")
-            self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_launch.configure(state="normal"))
-            self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
-            self.app.after(0, lambda: self.toggle_progress(False))
-            return
 
-        self.display_status(text="Uninstalling patch...", text_color="white", stay=True)
-        files_to_download = self.app.installed_game_manifest.Files or []
-        total_files = len(files_to_download)
-        downloaded_so_far = 0 
-        
+        temp_dest = None
+
         try:
+            if not self.app.installed_game_manifest and not ImagePatcher.has_backup(self.app.game_config.GamePath):
+                self.display_status(text="No patch installed to uninstall.", text_color="red")
+                self.app.after(0, lambda: self.toggle_progress(False))
+                return
+
+            self.display_status(text="Uninstalling patch...", text_color="white", stay=True)
+            files_to_download = (self.app.installed_game_manifest.Files if self.app.installed_game_manifest and self.app.installed_game_manifest.Files else [])
+            total_files = len(files_to_download)
+
             for idx, asset in enumerate(files_to_download):
+                if self.is_cancelled:
+                    break
                 if not asset.OriginalDownloadUrl:
                     continue
                 dest = Path(self.app.game_config.GamePath) / asset.FolderPath / asset.FinalizedFileName
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 temp_dest = dest.with_suffix(dest.suffix + ".tmp")
                 download_url = f"{asset.OriginalDownloadUrl}/{asset.OriginalFileName}"
-                
-                display_name = "Translated Images" if (asset.OriginalFileName.lower().endswith(".bundle") or getattr(asset, 'DownloadKey', '')) else asset.OriginalFileName
+
+                display_name = "English Images" if (asset.OriginalFileName.lower().endswith(".bundle") or getattr(asset, 'DownloadKey', '')) else asset.OriginalFileName
                 self.app.after(0, lambda n=display_name, c=idx+1, t=total_files: self.display_status(text=f"Reverting: {n} ({c}/{t})", stay=True))
 
-                with requests.get(download_url, headers=HEADERS, stream=True, timeout=15) as r:
-                    r.raise_for_status()
-                    total_bytes = int(r.headers.get('content-length', 0))
-                    current_downloaded = 0
-                    with open(temp_dest, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=16384):
-                            if chunk:
-                                f.write(chunk)
-                                current_downloaded += len(chunk)
-                                if total_bytes > 0:
-                                    percent = current_downloaded / total_bytes
-                                    self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
-                
+                try:
+                    with requests.get(download_url, headers=HEADERS, stream=True, timeout=15) as r:
+                        self.current_response = r
+                        r.raise_for_status()
+                        total_bytes = int(r.headers.get('content-length', 0))
+                        current_downloaded = 0
+                        with open(temp_dest, "wb") as f:
+                            for chunk in r.iter_content(chunk_size=16384):
+                                if self.is_cancelled:
+                                    break
+                                if chunk:
+                                    f.write(chunk)
+                                    current_downloaded += len(chunk)
+                                    if total_bytes > 0:
+                                        percent = current_downloaded / total_bytes
+                                        self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
+                finally:
+                    self.current_response = None
+
+                if self.is_cancelled:
+                    if temp_dest and os.path.exists(temp_dest):
+                        try:
+                            os.remove(temp_dest)
+                        except Exception:
+                            pass
+                    temp_dest = None
+                    break
+
                 if os.path.exists(dest):
                     os.remove(dest)
                 os.rename(temp_dest, dest)
+                temp_dest = None
                 self.app.after(0, lambda n=display_name: self.display_status(text=f"Reverted: {n}"))
 
-            if os.path.exists(MANIFEST_PATH):
-                os.remove(MANIFEST_PATH)
-            self.app.installed_game_manifest = None
-            self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text=t("st_uninstall_done"), text_color="green"))
-            self.app.setting_manager.update_installed_patch_text()
-            
+            # 2. Revert Image Bundles from local .bundle.bak
+            if not self.is_cancelled and ImagePatcher.has_backup(self.app.game_config.GamePath):
+                self.app.after(0, lambda: self.display_status(text="Reverting: English Images...", text_color="white", stay=True))
+                def update_revert_progress(status_text, percent):
+                    self.app.after(0, lambda s=status_text: self.display_status(text=s, text_color="white", stay=True))
+                    self.app.after(0, lambda p=percent: self.app.progress_bar.set(p))
+
+                ImagePatcher.revert(
+                    game_path=self.app.game_config.GamePath,
+                    on_progress=update_revert_progress,
+                    cancel_check=lambda: self.is_cancelled
+                )
+
+            if self.is_cancelled:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_cancelled"), text_color="orange")
+            else:
+                if os.path.exists(MANIFEST_PATH):
+                    os.remove(MANIFEST_PATH)
+                self.app.installed_game_manifest = None
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_uninstall_done"), text_color="green")
+                self.app.after(0, self.app.setting_manager.update_installed_patch_text)
+
         except Exception as e:
-            print(f"{e}")
-            self.app.after(0, lambda: self.toggle_progress(False))
-            self.app.after(0, lambda: self.display_status(text=t("st_uninstall_fail"), text_color="red"))
-        
-        self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_launch.configure(state="normal"))
-        self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
+            if self.is_cancelled:
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_cancelled"), text_color="orange")
+            else:
+                print(f"{e}")
+                self.app.after(0, lambda: self.toggle_progress(False))
+                self.display_status(text=t("st_uninstall_fail"), text_color="red")
+        finally:
+            if temp_dest and os.path.exists(temp_dest):
+                try:
+                    os.remove(temp_dest)
+                except Exception:
+                    pass
+            self.current_response = None
+            self.is_downloading = False
+            self.is_cancelled = False
+            self.app.after(0, self._restore_launch_button)
+            self.app.after(0, lambda: self.app.btn_folder.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_check.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_update.configure(state="normal"))
+            self.app.after(0, lambda: self.app.btn_original.configure(state="normal"))
+            self.app.after(0, lambda: self.app.branch_option.configure(state="normal"))

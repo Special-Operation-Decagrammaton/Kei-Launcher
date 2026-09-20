@@ -12,6 +12,11 @@ class AppInterface(Protocol):
     game_config: LauncherConfig
     installed_game_manifest: PatchManifest
     remote_game_manifest: PatchManifest
+
+    GREEN_COLOR: str
+    GREEN_HOVER: str
+    RED_COLOR: str
+    RED_HOVER: str
     
     # UI Elements: Top Level
     settings_btn: ctk.CTkButton
