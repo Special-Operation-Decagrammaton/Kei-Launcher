@@ -217,7 +217,9 @@ class App(ctk.CTk):
         # Start update check chain
         if self.game_config.CheckUpdateOnLaunch:
             self.update_manager.start_check_launcher_update_thread(on_complete=self.update_manager.start_check_updates_thread)
-
+        else:
+            self.update_manager.start_check_updates_thread()
+        
         # Kei-Chan!
         self.kei = KeiChan(self)
 
