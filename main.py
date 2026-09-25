@@ -215,7 +215,8 @@ class App(ctk.CTk):
             self.setting_manager.update_installed_patch_text()
 
         # Start update check chain
-        self.update_manager.start_check_launcher_update_thread(on_complete=self.update_manager.start_check_updates_thread)
+        if self.game_config.CheckUpdateOnLaunch:
+            self.update_manager.start_check_launcher_update_thread(on_complete=self.update_manager.start_check_updates_thread)
 
         # Kei-Chan!
         self.kei = KeiChan(self)

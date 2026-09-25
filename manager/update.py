@@ -85,10 +85,6 @@ class UpdateManager:
         threading.Thread(target=self.check_launcher_update, args=(on_complete, on_status), daemon=True).start()
     
     def check_launcher_update(self, on_complete=None, on_status=None):
-        if not self.app.game_config.CheckUpdateOnLaunch:
-            if on_complete:
-                self.app.after(0, on_complete)
-            return
         if on_status:
             self.app.after(0, lambda: on_status("Checking launcher version...", "yellow"))
         url = f"https://api.github.com/repos/{LAUNCHER_REPO}/releases/latest"
