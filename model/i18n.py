@@ -23,6 +23,7 @@ _STRINGS = {
     "settings":        {"en": "Settings",              "pt": "Configurações"},
     "version":         {"en": "Version",               "pt": "Versão"},
     "close_on_launch": {"en": "Close Launcher on Game Launch", "pt": "Fechar o launcher ao iniciar o jogo"},
+    "check_update_on_launch": {"en": "Check Launcher Update on Launch", "pt": "Verificar Atualização do Launcher ao Iniciar o Jogo"},
     "download_images":      {"en": "Download English Image Patch",    "pt": "Baixar Patch de Imagens em Inglês"},
     "download_images_hint": {"en": "(Downloading and patching may take a while)", "pt": "(O downloading e o patching podem demorar um pouco)"},
     "github_repo":          {"en": "GitHub Repository",             "pt": "Repositório no GitHub"},

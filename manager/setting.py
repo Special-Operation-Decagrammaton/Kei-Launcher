@@ -20,7 +20,8 @@ class SettingManager:
             Language=Language.EN.value,
             Branch=Branch.NONE.value,
             CloseOnLaunch=True,
-            DownloadImages=False
+            DownloadImages=False,
+            CheckUpdateOnLaunch=True
         )
         self.app.installed_game_manifest = None
         self.app.remote_game_manifest = None
@@ -118,6 +119,10 @@ class SettingManager:
                 
     def toggle_close_on_launch(self, value: bool):
         self.app.game_config.CloseOnLaunch = value
+        save_config(self.app.game_config, CONFIG_PATH)
+
+    def toggle_check_update_on_launch(self, value: bool):
+        self.app.game_config.CheckUpdateOnLaunch = value
         save_config(self.app.game_config, CONFIG_PATH)
 
     def toggle_download_images(self, value: bool):

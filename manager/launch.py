@@ -106,6 +106,18 @@ class LaunchManager:
         )
         col_switch.pack(pady=(12, 6))
 
+        def toggle_cul():
+            self.app.setting_manager.toggle_check_update_on_launch(check_update_on_launch_var.get())
+
+        check_update_on_launch_var = ctk.BooleanVar(value=getattr(self.app.game_config, "CheckUpdateOnLaunch", False))
+        cul_switch = ctk.CTkSwitch(
+            popup, text=t("check_update_on_launch"), 
+            variable=check_update_on_launch_var, 
+            command=toggle_cul,
+            font=("Roboto", 14)
+        )
+        cul_switch.pack(pady=(12, 6))
+
         def toggle_download_img():
             self.app.setting_manager.toggle_download_images(download_images_var.get())
 

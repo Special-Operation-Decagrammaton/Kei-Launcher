@@ -23,6 +23,7 @@ class LauncherConfig(BaseModel):
     Branch: Branch
     CloseOnLaunch: Optional[bool] = True
     DownloadImages: Optional[bool] = False
+    CheckUpdateOnLaunch: Optional[bool] = True
     
 def load_config(file_path: Path) -> LauncherConfig:
     return LauncherConfig.model_validate_json(file_path.read_text(encoding="utf-8"))
