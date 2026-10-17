@@ -2,29 +2,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="KeiLauncher.Views.LauncherUpdateWindow"
         Title="Launcher Update"
-        Icon="/Assets/Icon/kei.ico"
-        Width="320" Height="150"
+        Icon="/Assets/Icon/kei_halo.ico"
+        Width="380" Height="175"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
-        Background="#1a1a1a">
+        Background="#0a0f18">
 
-    <StackPanel Margin="20" Spacing="16" VerticalAlignment="Center">
+    <Grid Margin="16">
+        <Border Classes="cyber-card">
+            <StackPanel Spacing="12" VerticalAlignment="Center">
 
-        <TextBlock x:Name="MessageLabel"
-                   FontSize="13" Foreground="White"
-                   TextWrapping="Wrap"
-                   HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <TextBlock Text="⚡" Foreground="#fbbf24" FontSize="13" VerticalAlignment="Center" />
+                    <TextBlock Text="// SYSTEM UPDATE AVAILABLE"
+                               FontSize="12" FontWeight="Bold"
+                               Foreground="#fbbf24"
+                               LetterSpacing="0.8"
+                               VerticalAlignment="Center" />
+                </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-            <Button x:Name="DownloadBtn"
-                    Content="Download"
-                    Width="110" Height="34"
-                    Background="#3b5b92" Foreground="White" />
-            <Button x:Name="LaterBtn"
-                    Content="Later"
-                    Width="110" Height="34"
-                    Background="#555555" Foreground="White" />
-        </StackPanel>
+                <TextBlock x:Name="MessageLabel"
+                           FontSize="13" Foreground="#e2e8f0"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center" />
 
-    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <Button x:Name="DownloadBtn"
+                            Classes="cyber-btn gold"
+                            Content="Download"
+                            Width="120" Height="36" />
+                    <Button x:Name="LaterBtn"
+                            Classes="cyber-btn tech"
+                            Content="Later"
+                            Width="120" Height="36" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>

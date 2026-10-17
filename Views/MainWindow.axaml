@@ -4,67 +4,135 @@
         x:Class="KeiLauncher.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Kei Launcher"
-        Icon="/Assets/Icon/kei.ico"
+        Icon="/Assets/Icon/kei_halo.ico"
         Width="1080" Height="640"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
-        Background="#1a1a1a">
+        Background="#0a0f18">
 
     <Window.Styles>
-        <Style Selector="Button.action">
+        <Style Selector="Border.cyber-card">
+            <Setter Property="Background" Value="#ea0d1524" />
+            <Setter Property="BorderBrush" Value="#1e324d" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14,12" />
+        </Style>
+
+        <Style Selector="Button.cyber-btn">
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
         <Style Selector="Button.blue">
-            <Setter Property="Background" Value="#3b5b92" />
-            <Setter Property="BorderBrush" Value="#4a6ea8" />
+            <Setter Property="Background" Value="#0369a1" />
+            <Setter Property="BorderBrush" Value="#0284c7" />
             <Setter Property="Foreground" Value="White" />
         </Style>
         <Style Selector="Button.blue:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#4f79c2" />
-            <Setter Property="BorderBrush" Value="#82a8ec" />
+            <Setter Property="Background" Value="#0284c7" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
             <Setter Property="Foreground" Value="White" />
         </Style>
         <Style Selector="Button.blue:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#2b436b" />
-            <Setter Property="BorderBrush" Value="#3b5b92" />
+            <Setter Property="Background" Value="#075985" />
+            <Setter Property="BorderBrush" Value="#0284c7" />
             <Setter Property="Foreground" Value="White" />
         </Style>
 
-        <Style Selector="Button.orange">
-            <Setter Property="Background" Value="#a66100" />
-            <Setter Property="BorderBrush" Value="#c77502" />
+        <Style Selector="Button.gold">
+            <Setter Property="Background" Value="#b45309" />
+            <Setter Property="BorderBrush" Value="#d97706" />
             <Setter Property="Foreground" Value="White" />
         </Style>
-        <Style Selector="Button.orange:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#c97600" />
-            <Setter Property="BorderBrush" Value="#ff9914" />
+        <Style Selector="Button.gold:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#d97706" />
+            <Setter Property="BorderBrush" Value="#fbbf24" />
             <Setter Property="Foreground" Value="White" />
         </Style>
-        <Style Selector="Button.orange:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#7d4900" />
-            <Setter Property="BorderBrush" Value="#a66100" />
+        <Style Selector="Button.gold:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#92400e" />
+            <Setter Property="BorderBrush" Value="#b45309" />
             <Setter Property="Foreground" Value="White" />
         </Style>
 
-        <Style Selector="Button.action:disabled /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#55303030" />
-            <Setter Property="BorderBrush" Value="#33505050" />
-            <Setter Property="Foreground" Value="#77ffffff" />
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="#291417" />
+            <Setter Property="BorderBrush" Value="#7f1d1d" />
+            <Setter Property="Foreground" Value="#fca5a5" />
+        </Style>
+        <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#45141b" />
+            <Setter Property="BorderBrush" Value="#ef4444" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.danger:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#1f0d10" />
+            <Setter Property="BorderBrush" Value="#991b1b" />
+            <Setter Property="Foreground" Value="#fca5a5" />
         </Style>
 
+        <Style Selector="Button.tech">
+            <Setter Property="Background" Value="#172235" />
+            <Setter Property="BorderBrush" Value="#2d4363" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+        </Style>
+        <Style Selector="Button.tech:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#22334e" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.tech:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#111a28" />
+            <Setter Property="BorderBrush" Value="#1e324d" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+        </Style>
+
+        <Style Selector="Button.cyber-btn:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#141c28" />
+            <Setter Property="BorderBrush" Value="#1e293b" />
+            <Setter Property="Foreground" Value="#475569" />
+        </Style>
+
+        <!-- Launch Button: Normal (Green) -->
         <Style Selector="Button.launch-btn">
             <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Background" Value="#15803d" />
+            <Setter Property="BorderBrush" Value="#4ade80" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
         <Style Selector="Button.launch-btn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{Binding LaunchButtonColor}" />
-            <Setter Property="Opacity" Value="0.88" />
+            <Setter Property="Background" Value="#16a34a" />
+            <Setter Property="BorderBrush" Value="#86efac" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
         <Style Selector="Button.launch-btn:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{Binding LaunchButtonColor}" />
-            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="Background" Value="#166534" />
+            <Setter Property="BorderBrush" Value="#4ade80" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <!-- Launch Button: Cancel State (Red) -->
+        <Style Selector="Button.launch-btn.cancel">
+            <Setter Property="Background" Value="#991b1b" />
+            <Setter Property="BorderBrush" Value="#ef4444" />
+        </Style>
+        <Style Selector="Button.launch-btn.cancel:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#b91c1c" />
+            <Setter Property="BorderBrush" Value="#f87171" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.launch-btn.cancel:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#7f1d1d" />
+            <Setter Property="BorderBrush" Value="#ef4444" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
     </Window.Styles>
 
@@ -72,170 +140,257 @@
         <Image Source="{Binding CurrentBackgroundImage}"
                Stretch="UniformToFill"
                IsHitTestVisible="False" />
-        <Border Background="#cc161616" IsHitTestVisible="False" />
+        <Border Background="#ea090d16" IsHitTestVisible="False" />
 
-        <Grid RowDefinitions="Auto,*,Auto">
+        <Grid RowDefinitions="Auto, *, Auto" Margin="32,20,32,20">
 
-        <!-- Header -->
-        <Grid Grid.Row="0" Margin="40,12,40,12">
-            <TextBlock Text="Kei Launcher"
-                       FontSize="40" FontWeight="Bold"
-                       TextDecorations="Underline"
-                       Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
+            <!-- Top Bar / Header -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Image Source="/Assets/Icon/kei.ico" Width="34" Height="34" VerticalAlignment="Center" />
+                    <TextBlock Text="KEI LAUNCHER"
+                               FontSize="22" FontWeight="Black"
+                               Foreground="White"
+                               LetterSpacing="1.5"
+                               VerticalAlignment="Center" />
+                    <Border Background="#102035"
+                            BorderBrush="#0284c7"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="8,3"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="// MILLENNIUM TERMINAL"
+                                   FontSize="11" FontWeight="Bold"
+                                   Foreground="#38bdf8"
+                                   LetterSpacing="0.8" />
+                    </Border>
+                </StackPanel>
 
-            <Button Content="{Binding SettingsLabel}"
-                    Classes="action blue"
-                    FontSize="13"
-                    Width="100" Height="36"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Command="{Binding OpenSettingsCommand}" />
-        </Grid>
+                <Button Classes="cyber-btn tech"
+                        Content="{Binding SettingsLabel}"
+                        Width="105" Height="36"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenSettingsCommand}" />
+            </Grid>
 
-        <!-- Body: 3 columns -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Margin="40,0,40,0">
+            <!-- Main Dashboard: 2-Column Tech Grid -->
+            <Grid Grid.Row="1" ColumnDefinitions="1.15*, 0.85*">
 
-            <!-- Col 0: Patch Info -->
-            <StackPanel Grid.Column="0" VerticalAlignment="Top" Spacing="8">
+                <!-- Left Column: Patch Info & Changelogs -->
+                <StackPanel Grid.Column="0" Spacing="14" Margin="0,0,10,0">
 
-                <!-- Installed Patch Card -->
-                <Border Background="#d9101826" BorderBrush="#3d5c8a" BorderThickness="1.5" CornerRadius="8" Padding="14,10">
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="{Binding InstalledPatchLabel}"
-                                   FontSize="17" FontWeight="Bold"
-                                   TextDecorations="Underline"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center" />
-                        <TextBlock Text="{Binding InstalledPatchDate}"
-                                   FontSize="13" Foreground="#8ec5fc" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" />
-                        <ScrollViewer Height="85" HorizontalScrollBarVisibility="Disabled">
-                            <TextBlock Text="{Binding InstalledPatchNote}"
-                                       FontSize="12" Foreground="#e6e6e6"
-                                       TextWrapping="Wrap"
-                                       TextAlignment="Center" />
-                        </ScrollViewer>
+                    <!-- Installed Patch Card -->
+                    <Border Classes="cyber-card">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <TextBlock Text="▶" Foreground="#38bdf8" FontSize="11" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding InstalledPatchLabel}"
+                                               FontSize="13" FontWeight="Bold"
+                                               Foreground="#38bdf8"
+                                               LetterSpacing="0.5" />
+                                </StackPanel>
+                                <Border Grid.Column="1"
+                                        Background="#102035"
+                                        BorderBrush="#0284c7"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="8,2">
+                                    <TextBlock Text="{Binding InstalledPatchDate}"
+                                               FontSize="12" Foreground="#7dd3fc"
+                                               FontWeight="SemiBold" />
+                                </Border>
+                            </Grid>
+
+                            <Border Height="1" Background="#1a2b42" Margin="0,4,0,4" />
+
+                            <ScrollViewer Height="80" HorizontalScrollBarVisibility="Disabled">
+                                <TextBlock Text="{Binding InstalledPatchNote}"
+                                           FontSize="12" Foreground="#cbd5e1"
+                                           TextWrapping="Wrap" />
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Latest Patch Card -->
+                    <Border Classes="cyber-card">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <TextBlock Text="▶" Foreground="#fbbf24" FontSize="11" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding LatestPatchLabel}"
+                                               FontSize="13" FontWeight="Bold"
+                                               Foreground="#fbbf24"
+                                               LetterSpacing="0.5" />
+                                </StackPanel>
+                                <Border Grid.Column="1"
+                                        Background="#261c10"
+                                        BorderBrush="#d97706"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="8,2">
+                                    <TextBlock Text="{Binding LatestPatchDate}"
+                                               FontSize="12" Foreground="#fde68a"
+                                               FontWeight="SemiBold" />
+                                </Border>
+                            </Grid>
+
+                            <Border Height="1" Background="#1a2b42" Margin="0,4,0,4" />
+
+                            <ScrollViewer Height="110" HorizontalScrollBarVisibility="Disabled">
+                                <TextBlock Text="{Binding LatestPatchNote}"
+                                           FontSize="12" Foreground="#cbd5e1"
+                                           TextWrapping="Wrap" />
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- Right Column: Branch, Path & Controls -->
+                <StackPanel Grid.Column="1" Spacing="14" Margin="10,0,0,0">
+
+                    <!-- Branch Selection Card -->
+                    <Border Classes="cyber-card">
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <TextBlock Text="◈" Foreground="#38bdf8" FontSize="12" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding BranchLabel}"
+                                               FontSize="13" FontWeight="Bold"
+                                               Foreground="#38bdf8"
+                                               LetterSpacing="0.5" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding BranchHint}"
+                                           FontSize="11" Foreground="#64748b"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+
+                            <ComboBox ItemsSource="{Binding BranchOptions}"
+                                      SelectedItem="{Binding SelectedBranch}"
+                                      HorizontalAlignment="Stretch"
+                                      Height="38"
+                                      FontSize="14"
+                                      IsEnabled="{Binding IsIdle}" />
+
+                            <TextBlock Text="{Binding BranchDescription}"
+                                       FontSize="12" Foreground="#94a3b8"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Game Directory Card -->
+                    <Border Classes="cyber-card">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Grid.Column="0" Spacing="6" VerticalAlignment="Center" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <TextBlock Text="⌖" Foreground="#38bdf8" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock Text="GAME DIRECTORY"
+                                               FontSize="13" FontWeight="Bold"
+                                               Foreground="#38bdf8"
+                                               LetterSpacing="0.5" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding GamePathDisplay}"
+                                           FontSize="12" Foreground="#94a3b8"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Classes="cyber-btn blue"
+                                    Content="{Binding SetFolderLabel}"
+                                    Height="38"
+                                    Padding="14,0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding SetFolderCommand}"
+                                    IsEnabled="{Binding IsIdle}" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Operations Card -->
+                    <Border Classes="cyber-card">
+                        <StackPanel Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <TextBlock Text="⚡" Foreground="#fbbf24" FontSize="12" VerticalAlignment="Center" />
+                                <TextBlock Text="OPERATIONS"
+                                           FontSize="13" FontWeight="Bold"
+                                           Foreground="#fbbf24"
+                                           LetterSpacing="0.5" />
+                            </StackPanel>
+
+                            <StackPanel Spacing="8">
+                                <Button Classes="cyber-btn blue"
+                                        HorizontalAlignment="Stretch"
+                                        Height="38"
+                                        Content="{Binding CheckUpdateLabel}"
+                                        Command="{Binding CheckUpdateCommand}"
+                                        IsEnabled="{Binding IsIdle}" />
+
+                                <Button Classes="cyber-btn gold"
+                                        HorizontalAlignment="Stretch"
+                                        Height="38"
+                                        Content="{Binding InstallUpdateLabel}"
+                                        Command="{Binding InstallUpdateCommand}"
+                                        IsEnabled="{Binding IsIdle}" />
+
+                                <Button Classes="cyber-btn danger"
+                                        HorizontalAlignment="Stretch"
+                                        Height="38"
+                                        Content="{Binding UninstallLabel}"
+                                        Command="{Binding UninstallCommand}"
+                                        IsEnabled="{Binding IsIdle}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+            </Grid>
+
+            <!-- Bottom Dock / Footer -->
+            <Grid Grid.Row="2" ColumnDefinitions="*, Auto" Margin="0,10,0,0">
+
+                <!-- Left: Status & Dual Progress -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="6" Margin="0,0,20,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding StatusVisible}">
+                        <TextBlock Text="●" Foreground="{Binding StatusColor}" FontSize="12" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding StatusText}"
+                                   Foreground="{Binding StatusColor}"
+                                   FontSize="13" FontWeight="Bold"
+                                   VerticalAlignment="Center" />
                     </StackPanel>
-                </Border>
 
-                <!-- Latest Patch Card -->
-                <Border Background="#d9101826" BorderBrush="#3d5c8a" BorderThickness="1.5" CornerRadius="8" Padding="14,10">
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="{Binding LatestPatchLabel}"
-                                   FontSize="17" FontWeight="Bold"
-                                   TextDecorations="Underline"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center" />
-                        <TextBlock Text="{Binding LatestPatchDate}"
-                                   FontSize="13" Foreground="#8ec5fc" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" />
-                        <ScrollViewer Height="85" HorizontalScrollBarVisibility="Disabled">
-                            <TextBlock Text="{Binding LatestPatchNote}"
-                                       FontSize="12" Foreground="#e6e6e6"
-                                       TextWrapping="Wrap"
-                                       TextAlignment="Center" />
-                        </ScrollViewer>
-                    </StackPanel>
-                </Border>
+                    <ProgressBar Value="{Binding FileProgressValue}"
+                                 Minimum="0" Maximum="1"
+                                 Height="6" Width="560"
+                                 Foreground="#00d2ff"
+                                 Background="#111827"
+                                 CornerRadius="3"
+                                 HorizontalAlignment="Left"
+                                 IsVisible="{Binding ProgressVisible}" />
 
-            </StackPanel>
+                    <ProgressBar Value="{Binding ProgressValue}"
+                                 Minimum="0" Maximum="1"
+                                 Height="8" Width="560"
+                                 Foreground="#10b981"
+                                 Background="#111827"
+                                 CornerRadius="4"
+                                 HorizontalAlignment="Left"
+                                 IsVisible="{Binding ProgressVisible}" />
+                </StackPanel>
 
-            <!-- Col 1: Branch Selection -->
-            <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Spacing="10">
-                <TextBlock Text="{Binding BranchLabel}"
-                           FontSize="17" FontWeight="Bold"
-                           TextDecorations="Underline"
-                           Foreground="White"
-                           HorizontalAlignment="Center" />
+                <!-- Right: Launch Button -->
+                <Button Grid.Column="1"
+                        Classes="launch-btn"
+                        Classes.cancel="{Binding IsDownloading}"
+                        Content="{Binding LaunchButtonText}"
+                        FontSize="26" FontWeight="Black"
+                        LetterSpacing="1"
+                        Width="220" Height="64"
+                        Command="{Binding LaunchOrCancelCommand}" />
 
-                <ComboBox ItemsSource="{Binding BranchOptions}"
-                          SelectedItem="{Binding SelectedBranch}"
-                          Width="220" Height="44"
-                          FontSize="16"
-                          Background="#3b5b92"
-                          Foreground="White"
-                          IsEnabled="{Binding IsIdle}" />
-
-                <TextBlock Text="{Binding BranchDescription}"
-                           FontSize="13" Foreground="Gray"
-                           TextWrapping="Wrap"
-                           TextAlignment="Center"
-                           MaxWidth="200"
-                           HorizontalAlignment="Center" />
-            </StackPanel>
-
-            <!-- Col 2: Action Buttons -->
-            <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center" Spacing="8">
-
-                <Button Content="{Binding SetFolderLabel}"
-                        Classes="action blue"
-                        FontSize="13" Width="248" Height="44"
-                        IsEnabled="{Binding IsIdle}"
-                        Command="{Binding SetFolderCommand}" />
-
-                <Button Content="{Binding CheckUpdateLabel}"
-                        Classes="action orange"
-                        FontSize="13" Width="248" Height="44"
-                        IsEnabled="{Binding IsIdle}"
-                        Command="{Binding CheckUpdateCommand}" />
-
-                <Button Content="{Binding InstallUpdateLabel}"
-                        Classes="action orange"
-                        FontSize="13" Width="248" Height="44"
-                        IsEnabled="{Binding IsIdle}"
-                        Command="{Binding InstallUpdateCommand}" />
-
-                <Button Content="{Binding UninstallLabel}"
-                        Classes="action orange"
-                        FontSize="13" Width="248" Height="44"
-                        IsEnabled="{Binding IsIdle}"
-                        Command="{Binding UninstallCommand}" />
-
-            </StackPanel>
+            </Grid>
 
         </Grid>
-
-        <!-- Footer -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="40,0,40,30">
-
-            <!-- Status + Progress (left) -->
-            <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Spacing="5">
-                <TextBlock Text="{Binding StatusText}"
-                           Foreground="{Binding StatusColor}"
-                           FontSize="14" FontWeight="Bold"
-                           IsVisible="{Binding StatusVisible}" />
-                <ProgressBar Value="{Binding FileProgressValue}"
-                             Minimum="0" Maximum="1"
-                             Height="10" Width="540"
-                             Foreground="#4a76ba"
-                             Background="#252525"
-                             CornerRadius="4"
-                             HorizontalAlignment="Left"
-                             IsVisible="{Binding ProgressVisible}" />
-                <ProgressBar Value="{Binding ProgressValue}"
-                             Minimum="0" Maximum="1"
-                             Height="10" Width="540"
-                             Foreground="#2e7d32"
-                             Background="#252525"
-                             CornerRadius="4"
-                             HorizontalAlignment="Left"
-                             IsVisible="{Binding ProgressVisible}" />
-            </StackPanel>
-
-            <!-- Launch / Cancel (right) -->
-            <Button Grid.Column="1"
-                    Classes="launch-btn"
-                    Content="{Binding LaunchButtonText}"
-                    FontSize="30" FontWeight="Bold"
-                    Width="240" Height="72"
-                    Background="{Binding LaunchButtonColor}"
-                    Foreground="White"
-                    Command="{Binding LaunchOrCancelCommand}" />
-
-        </Grid>
-
-    </Grid>
     </Grid>
 </Window>

@@ -55,8 +55,14 @@ partial class MainWindowViewModel : ViewModelBase
 
     public string LaunchButtonText => IsDownloading ? _loc["cancel"] : _loc["launch"];
     public IBrush LaunchButtonColor => IsDownloading
-        ? new SolidColorBrush(Color.Parse("#a62b2b"))
-        : new SolidColorBrush(Color.Parse("#137313"));
+        ? new SolidColorBrush(Color.Parse("#991b1b"))
+        : new SolidColorBrush(Color.Parse("#15803d"));
+    public IBrush LaunchButtonHoverColor => IsDownloading
+        ? new SolidColorBrush(Color.Parse("#b91c1c"))
+        : new SolidColorBrush(Color.Parse("#16a34a"));
+    public IBrush LaunchButtonBorderColor => IsDownloading
+        ? new SolidColorBrush(Color.Parse("#ef4444"))
+        : new SolidColorBrush(Color.Parse("#4ade80"));
     public string InstalledPatchLabel => _loc["installed_patch"];
     public string LatestPatchLabel => _loc["latest_patch"];
     public string BranchLabel => _loc["branch"];
@@ -66,6 +72,7 @@ partial class MainWindowViewModel : ViewModelBase
     public string InstallUpdateLabel => _loc["install_update"];
     public string UninstallLabel => _loc["uninstall"];
     public string SettingsLabel => _loc["settings"];
+    public string GamePathDisplay => string.IsNullOrEmpty(_state.Config.GamePath) ? "-" : _state.Config.GamePath;
 
     public event Action? CloseRequested;
     public event Action? OpenSettingsRequested;
@@ -207,6 +214,7 @@ partial class MainWindowViewModel : ViewModelBase
         _configRepo.Save(_state.Config);
         ShowStatus($"Path set: {path}", "Green");
         OnPropertyChanged(nameof(CanLaunch));
+        OnPropertyChanged(nameof(GamePathDisplay));
     }
 
     partial void OnSelectedBranchChanged(string value)
@@ -388,6 +396,8 @@ partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CanLaunch));
         OnPropertyChanged(nameof(LaunchButtonText));
         OnPropertyChanged(nameof(LaunchButtonColor));
+        OnPropertyChanged(nameof(LaunchButtonHoverColor));
+        OnPropertyChanged(nameof(LaunchButtonBorderColor));
         ProgressVisible = phase != DownloadPhase.Idle && phase != DownloadPhase.Done;
         if (!ProgressVisible)
         {
@@ -436,6 +446,8 @@ partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(LaunchButtonText));
         OnPropertyChanged(nameof(LaunchButtonColor));
+        OnPropertyChanged(nameof(LaunchButtonHoverColor));
+        OnPropertyChanged(nameof(LaunchButtonBorderColor));
         OnPropertyChanged(nameof(InstalledPatchLabel));
         OnPropertyChanged(nameof(LatestPatchLabel));
         OnPropertyChanged(nameof(BranchLabel));
@@ -445,6 +457,7 @@ partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(InstallUpdateLabel));
         OnPropertyChanged(nameof(UninstallLabel));
         OnPropertyChanged(nameof(SettingsLabel));
+        OnPropertyChanged(nameof(GamePathDisplay));
         RefreshBranchDescription();
     }
 }

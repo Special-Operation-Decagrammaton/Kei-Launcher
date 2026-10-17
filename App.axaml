@@ -9,6 +9,173 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+
+        <Style Selector="Border.cyber-card">
+            <Setter Property="Background" Value="#ea0d1524" />
+            <Setter Property="BorderBrush" Value="#1e324d" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14,12" />
+        </Style>
+
+        <Style Selector="Button.cyber-btn">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Button.blue">
+            <Setter Property="Background" Value="#0369a1" />
+            <Setter Property="BorderBrush" Value="#0284c7" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.blue:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#0284c7" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.blue:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#075985" />
+            <Setter Property="BorderBrush" Value="#0284c7" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.gold">
+            <Setter Property="Background" Value="#b45309" />
+            <Setter Property="BorderBrush" Value="#d97706" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.gold:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#d97706" />
+            <Setter Property="BorderBrush" Value="#fbbf24" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.gold:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#92400e" />
+            <Setter Property="BorderBrush" Value="#b45309" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="#291417" />
+            <Setter Property="BorderBrush" Value="#7f1d1d" />
+            <Setter Property="Foreground" Value="#fca5a5" />
+        </Style>
+        <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#45141b" />
+            <Setter Property="BorderBrush" Value="#ef4444" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.danger:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#1f0d10" />
+            <Setter Property="BorderBrush" Value="#991b1b" />
+            <Setter Property="Foreground" Value="#fca5a5" />
+        </Style>
+
+        <Style Selector="Button.tech">
+            <Setter Property="Background" Value="#172235" />
+            <Setter Property="BorderBrush" Value="#2d4363" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+        </Style>
+        <Style Selector="Button.tech:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#22334e" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.tech:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#111a28" />
+            <Setter Property="BorderBrush" Value="#1e324d" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+        </Style>
+
+        <Style Selector="Button.cyber-btn:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#141c28" />
+            <Setter Property="BorderBrush" Value="#1e293b" />
+            <Setter Property="Foreground" Value="#475569" />
+        </Style>
+
+        <!-- ComboBox Millennium Styles -->
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="#101826" />
+            <Setter Property="BorderBrush" Value="#1e3a5f" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="10,6" />
+        </Style>
+        <Style Selector="ComboBox:pointerover /template/ Border#Background">
+            <Setter Property="Background" Value="#172439" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+        </Style>
+        <Style Selector="ComboBox:focus /template/ Border#Background">
+            <Setter Property="Background" Value="#172439" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+        </Style>
+
+        <Style Selector="ComboBox /template/ Border#PopupBorder">
+            <Setter Property="Background" Value="#0d1524" />
+            <Setter Property="BorderBrush" Value="#1e3a5f" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+
+        <Style Selector="ComboBoxItem">
+            <Setter Property="Background" Value="#0d1524" />
+            <Setter Property="Foreground" Value="#e2e8f0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#172844" />
+            <Setter Property="Foreground" Value="#38bdf8" />
+        </Style>
+        <Style Selector="ComboBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#0284c7" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#0369a1" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <!-- CheckBox Millennium Styles -->
+        <Style Selector="CheckBox">
+            <Setter Property="Foreground" Value="#e2e8f0" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style Selector="CheckBox /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#101826" />
+            <Setter Property="BorderBrush" Value="#1e3a5f" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="CheckBox:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#172439" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+        </Style>
+        <Style Selector="CheckBox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="#ffffff" />
+        </Style>
+        <Style Selector="CheckBox:pressed /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#0f1b2b" />
+            <Setter Property="BorderBrush" Value="#0284c7" />
+        </Style>
+        <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#0284c7" />
+            <Setter Property="BorderBrush" Value="#38bdf8" />
+        </Style>
+        <Style Selector="CheckBox:checked /template/ Path#CheckGlyph">
+            <Setter Property="Fill" Value="White" />
+            <Setter Property="Stroke" Value="White" />
+        </Style>
+        <Style Selector="CheckBox:checked:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#0369a1" />
+            <Setter Property="BorderBrush" Value="#7dd3fc" />
+        </Style>
     </Application.Styles>
 
 </Application>

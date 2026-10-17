@@ -6,7 +6,7 @@
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>false</InvariantGlobalization>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Assets\Icon\kei.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\Icon\kei_halo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

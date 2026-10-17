@@ -4,67 +4,94 @@
         x:Class="KeiLauncher.Views.SettingsWindow"
         x:DataType="vm:SettingsWindowViewModel"
         Title="{Binding Title}"
-        Icon="/Assets/Icon/kei.ico"
-        Width="400" Height="440"
+        Icon="/Assets/Icon/kei_halo.ico"
+        Width="430" Height="480"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
-        Background="#1a1a1a">
+        Background="#0a0f18">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto, *, Auto" Margin="24,20,24,20">
 
-        <!-- Title / Version -->
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,16,0,8" Spacing="4">
-            <TextBlock Text="Kei Launcher"
-                       FontSize="17" FontWeight="Bold"
-                       Foreground="White"
-                       HorizontalAlignment="Center" />
-            <TextBlock Text="{Binding VersionLabel}"
-                       FontSize="13" Foreground="#aaaaaa"
-                       HorizontalAlignment="Center" />
-        </StackPanel>
-
-        <!-- Toggles -->
-        <StackPanel Grid.Row="1" Margin="30,8,30,8" Spacing="14" VerticalAlignment="Top">
-
-            <CheckBox Content="{Binding CloseOnLaunchLabel}"
-                      IsChecked="{Binding CloseOnLaunch}"
-                      Foreground="White" FontSize="13" />
-
-            <CheckBox Content="{Binding CheckUpdateOnLaunchLabel}"
-                      IsChecked="{Binding CheckUpdateOnLaunch}"
-                      Foreground="White" FontSize="13" />
-
-            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                <TextBlock Text="{Binding LanguageLabel}"
-                           Foreground="White" FontSize="13"
+        <!-- Header -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,16" Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                <Image Source="/Assets/Icon/kei.ico" Width="26" Height="26" VerticalAlignment="Center" />
+                <TextBlock Text="KEI LAUNCHER"
+                           FontSize="18" FontWeight="Black"
+                           Foreground="White"
+                           LetterSpacing="1.2"
                            VerticalAlignment="Center" />
-                <ComboBox ItemsSource="{Binding LanguageOptions}"
-                          SelectedItem="{Binding SelectedLanguageDisplay}"
-                          Width="130" Height="32"
-                          Background="#3b5b92" Foreground="White" />
             </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                <Border Background="#102035"
+                        BorderBrush="#0284c7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="6,2">
+                    <TextBlock Text="// SYSTEM PREFERENCES"
+                               FontSize="11" FontWeight="Bold"
+                               Foreground="#38bdf8" />
+                </Border>
+                <TextBlock Text="{Binding VersionLabel}"
+                           FontSize="12" Foreground="#94a3b8"
+                           VerticalAlignment="Center" />
+            </StackPanel>
         </StackPanel>
 
-        <!-- Buttons & Status -->
-        <StackPanel Grid.Row="2" Margin="20,0,20,16" Spacing="10" HorizontalAlignment="Center">
+        <!-- Settings Options Card -->
+        <Border Grid.Row="1" Classes="cyber-card" VerticalAlignment="Top">
+            <StackPanel Spacing="16">
+
+                <CheckBox Content="{Binding CloseOnLaunchLabel}"
+                          IsChecked="{Binding CloseOnLaunch}"
+                          Foreground="#e2e8f0"
+                          FontSize="13" />
+
+                <CheckBox Content="{Binding CheckUpdateOnLaunchLabel}"
+                          IsChecked="{Binding CheckUpdateOnLaunch}"
+                          Foreground="#e2e8f0"
+                          FontSize="13" />
+
+                <Border Height="1" Background="#1e324d" Margin="0,2,0,2" />
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="◈" Foreground="#38bdf8" FontSize="12" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding LanguageLabel}"
+                                   Foreground="#e2e8f0" FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding LanguageOptions}"
+                              SelectedItem="{Binding SelectedLanguageDisplay}"
+                              Width="140" Height="34"
+                              FontSize="13" />
+                </Grid>
+
+            </StackPanel>
+        </Border>
+
+        <!-- Footer / Action Buttons & Status -->
+        <StackPanel Grid.Row="2" Spacing="12" Margin="0,16,0,0" HorizontalAlignment="Center">
             <TextBlock Text="{Binding StatusText}"
                        Foreground="{Binding StatusColor}"
-                       FontSize="13" FontWeight="SemiBold"
+                       FontSize="13" FontWeight="Bold"
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        IsVisible="{Binding StatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                        TextWrapping="Wrap" />
 
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                <Button Content="{Binding GithubRepoLabel}"
-                        Width="140" Height="36"
-                        Background="#3b5b92" Foreground="White"
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                <Button Classes="cyber-btn tech"
+                        Content="{Binding GithubRepoLabel}"
+                        Width="160" Height="38"
                         Command="{Binding OpenGithubCommand}" />
 
-                <Button Content="{Binding CheckUpdateLabel}"
-                        Width="140" Height="36"
-                        Background="#3b5b92" Foreground="White"
+                <Button Classes="cyber-btn blue"
+                        Content="{Binding CheckUpdateLabel}"
+                        Width="160" Height="38"
                         Command="{Binding CheckLauncherUpdateCommand}" />
             </StackPanel>
         </StackPanel>
