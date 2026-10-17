@@ -1,0 +1,73 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KeiLauncher.ViewModels"
+        x:Class="KeiLauncher.Views.SettingsWindow"
+        x:DataType="vm:SettingsWindowViewModel"
+        Title="{Binding Title}"
+        Icon="/Assets/Icon/kei.ico"
+        Width="400" Height="440"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#1a1a1a">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Title / Version -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,16,0,8" Spacing="4">
+            <TextBlock Text="Kei Launcher"
+                       FontSize="17" FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding VersionLabel}"
+                       FontSize="13" Foreground="#aaaaaa"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Toggles -->
+        <StackPanel Grid.Row="1" Margin="30,8,30,8" Spacing="14" VerticalAlignment="Top">
+
+            <CheckBox Content="{Binding CloseOnLaunchLabel}"
+                      IsChecked="{Binding CloseOnLaunch}"
+                      Foreground="White" FontSize="13" />
+
+            <CheckBox Content="{Binding CheckUpdateOnLaunchLabel}"
+                      IsChecked="{Binding CheckUpdateOnLaunch}"
+                      Foreground="White" FontSize="13" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Text="{Binding LanguageLabel}"
+                           Foreground="White" FontSize="13"
+                           VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding LanguageOptions}"
+                          SelectedItem="{Binding SelectedLanguageDisplay}"
+                          Width="130" Height="32"
+                          Background="#3b5b92" Foreground="White" />
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- Buttons & Status -->
+        <StackPanel Grid.Row="2" Margin="20,0,20,16" Spacing="10" HorizontalAlignment="Center">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="{Binding StatusColor}"
+                       FontSize="13" FontWeight="SemiBold"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       IsVisible="{Binding StatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                <Button Content="{Binding GithubRepoLabel}"
+                        Width="140" Height="36"
+                        Background="#3b5b92" Foreground="White"
+                        Command="{Binding OpenGithubCommand}" />
+
+                <Button Content="{Binding CheckUpdateLabel}"
+                        Width="140" Height="36"
+                        Background="#3b5b92" Foreground="White"
+                        Command="{Binding CheckLauncherUpdateCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Window>

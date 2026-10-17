@@ -1,6 +1,0 @@
-customtkinter
-pyinstaller
-requests
-pydantic
-pillow
-UnityPy

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="installed_patch" xml:space="preserve">
+    <value>Patch Instalado</value>
+  </data>
+  <data name="latest_patch" xml:space="preserve">
+    <value>Último Patch</value>
+  </data>
+  <data name="no_patch_notes" xml:space="preserve">
+    <value>Nenhuma nota de patch disponível.</value>
+  </data>
+  <data name="branch" xml:space="preserve">
+    <value>Branch</value>
+  </data>
+  <data name="branch_select_hint" xml:space="preserve">
+    <value>Selecione uma branch para ver os detalhes.</value>
+  </data>
+  <data name="set_folder" xml:space="preserve">
+    <value>Definir Pasta do Jogo</value>
+  </data>
+  <data name="check_update" xml:space="preserve">
+    <value>Verificar Atualização</value>
+  </data>
+  <data name="install_update" xml:space="preserve">
+    <value>Instalar / Atualizar Patch</value>
+  </data>
+  <data name="uninstall" xml:space="preserve">
+    <value>Desinstalar Patch</value>
+  </data>
+  <data name="launch" xml:space="preserve">
+    <value>Iniciar</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="set_folder_first" xml:space="preserve">
+    <value>Defina a pasta do jogo primeiro!</value>
+  </data>
+  <data name="desc_none" xml:space="preserve">
+    <value>Nenhuma branch de tradução selecionada.</value>
+  </data>
+  <data name="desc_en_ori" xml:space="preserve">
+    <value>Tradução em inglês (Global).</value>
+  </data>
+  <data name="desc_en_ext" xml:space="preserve">
+    <value>Tradução em inglês (Global) com adições da comunidade.</value>
+  </data>
+  <data name="desc_pt_br" xml:space="preserve">
+    <value>Tradução em Português (Brasil).</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="version" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="close_on_launch" xml:space="preserve">
+    <value>Fechar o launcher ao iniciar o jogo</value>
+  </data>
+  <data name="check_update_on_launch" xml:space="preserve">
+    <value>Verificar Atualização do Launcher ao Iniciar o Jogo</value>
+  </data>
+  <data name="github_repo" xml:space="preserve">
+    <value>Repositório no GitHub</value>
+  </data>
+  <data name="launcher_check_update" xml:space="preserve">
+    <value>Verificar Atualização</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="st_select_branch" xml:space="preserve">
+    <value>Selecione uma branch primeiro!</value>
+  </data>
+  <data name="st_set_folder" xml:space="preserve">
+    <value>Defina a pasta primeiro!</value>
+  </data>
+  <data name="st_checking" xml:space="preserve">
+    <value>Verificando o manifesto...</value>
+  </data>
+  <data name="st_fetch_fail" xml:space="preserve">
+    <value>Falha ao buscar o manifesto.</value>
+  </data>
+  <data name="st_no_updates" xml:space="preserve">
+    <value>Nenhuma atualização encontrada.</value>
+  </data>
+  <data name="st_check_fail" xml:space="preserve">
+    <value>Falha na verificação.</value>
+  </data>
+  <data name="st_cancelling" xml:space="preserve">
+    <value>Cancelando...</value>
+  </data>
+  <data name="st_cancelled" xml:space="preserve">
+    <value>Download cancelado.</value>
+  </data>
+  <data name="st_update_done" xml:space="preserve">
+    <value>Atualização concluída!</value>
+  </data>
+  <data name="st_update_fail" xml:space="preserve">
+    <value>Falha na atualização.</value>
+  </data>
+  <data name="st_uninstall_done" xml:space="preserve">
+    <value>Desinstalação concluída!</value>
+  </data>
+  <data name="st_uninstall_fail" xml:space="preserve">
+    <value>Falha na desinstalação.</value>
+  </data>
+</root>

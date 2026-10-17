@@ -13,41 +13,30 @@ permissions:
 
 jobs:
   build-windows:
-    name: Build Windows Executable (.exe)
+    name: Build Windows Executable
     runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        python-version: '3.11'
-        cache: 'pip'
+        dotnet-version: '10.0.x'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
+    - name: Publish Windows Native AOT
+      run: dotnet publish -r win-x64 -c Release -o publish-win
 
-    - name: Build Windows Standalone Executable
-      run: |
-        pyinstaller --noconsole --onefile --clean `
-          --icon="asset/kei.ico" `
-          --name "Kei_Launcher" `
-          --add-data "asset;asset" `
-          --collect-all customtkinter `
-          --collect-all UnityPy `
-          --collect-all PIL `
-          main.py
+    - name: Package Windows Artifact
+      shell: pwsh
+      run: Compress-Archive -Path "publish-win\*" -DestinationPath "KeiLauncher-Windows-x64.zip"
 
     - name: Upload Windows Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Kei_Launcher-Windows
-        path: dist/Kei_Launcher.exe
+        name: KeiLauncher-Windows-x64
+        path: KeiLauncher-Windows-x64.zip
         retention-days: 90
 
   build-linux:
@@ -58,40 +47,30 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Install System Dependencies (Tkinter / X11)
+    - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-tk tk-dev libx11-dev libxext-dev
+        sudo apt-get install -y clang zlib1g-dev libx11-dev libice6 libsm6 libfontconfig1
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        python-version: '3.11'
-        cache: 'pip'
+        dotnet-version: '10.0.x'
+        dotnet-quality: 'preview'
 
-    - name: Install Python Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
+    - name: Publish Linux Native AOT
+      run: dotnet publish -r linux-x64 -c Release -o publish-linux
 
-    - name: Build Linux Standalone Executable
+    - name: Package Linux Artifact
       run: |
-        pyinstaller --noconsole --onefile --clean \
-          --icon="asset/kei.png" \
-          --name "Kei_Launcher-Linux" \
-          --add-data "asset:asset" \
-          --collect-all customtkinter \
-          --collect-all UnityPy \
-          --collect-all PIL \
-          main.py
-        chmod +x dist/Kei_Launcher-Linux
+        chmod +x publish-linux/KeiLauncher
+        tar -czvf KeiLauncher-Linux-x64.tar.gz -C publish-linux .
 
     - name: Upload Linux Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Kei_Launcher-Linux
-        path: dist/Kei_Launcher-Linux
+        name: KeiLauncher-Linux-x64
+        path: KeiLauncher-Linux-x64.tar.gz
         retention-days: 90
 
   release:
@@ -104,21 +83,21 @@ jobs:
     - name: Download Windows Artifact
       uses: actions/download-artifact@v4
       with:
-        name: Kei_Launcher-Windows
+        name: KeiLauncher-Windows-x64
         path: release_files
 
     - name: Download Linux Artifact
       uses: actions/download-artifact@v4
       with:
-        name: Kei_Launcher-Linux
+        name: KeiLauncher-Linux-x64
         path: release_files
 
     - name: Publish Release to GitHub
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          release_files/Kei_Launcher.exe
-          release_files/Kei_Launcher-Linux
+          release_files/KeiLauncher-Windows-x64.zip
+          release_files/KeiLauncher-Linux-x64.tar.gz
         draft: false
         prerelease: false
         generate_release_notes: true

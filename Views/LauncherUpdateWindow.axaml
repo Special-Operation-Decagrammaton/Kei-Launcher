@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="KeiLauncher.Views.LauncherUpdateWindow"
+        Title="Launcher Update"
+        Icon="/Assets/Icon/kei.ico"
+        Width="320" Height="150"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#1a1a1a">
+
+    <StackPanel Margin="20" Spacing="16" VerticalAlignment="Center">
+
+        <TextBlock x:Name="MessageLabel"
+                   FontSize="13" Foreground="White"
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center" />
+
+        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+            <Button x:Name="DownloadBtn"
+                    Content="Download"
+                    Width="110" Height="34"
+                    Background="#3b5b92" Foreground="White" />
+            <Button x:Name="LaterBtn"
+                    Content="Later"
+                    Width="110" Height="34"
+                    Background="#555555" Foreground="White" />
+        </StackPanel>
+
+    </StackPanel>
+</Window>
