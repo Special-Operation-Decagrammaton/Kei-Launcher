@@ -128,7 +128,7 @@ class ManifestService(HttpClient http)
         if (!string.IsNullOrWhiteSpace(textNotes))
             parts.Add(textNotes.Trim());
         if (!string.IsNullOrWhiteSpace(bundleNotes))
-            parts.Add($"[R2 Bundles]\n{bundleNotes.Trim()}");
+            parts.Add($"Image Patch:\n{bundleNotes.Trim()}");
         return parts.Count > 0 ? string.Join("\n\n", parts) : null;
     }
 
