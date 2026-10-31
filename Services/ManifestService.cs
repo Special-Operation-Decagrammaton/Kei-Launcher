@@ -96,7 +96,7 @@ class ManifestService(HttpClient http)
 
         var combined = new PatchManifest
         {
-            UpdateDate = bundleManifest.UpdateDate ?? textManifest.UpdateDate,
+            UpdateDate = textManifest.UpdateDate ?? bundleManifest.UpdateDate,
             StringVersion = !string.IsNullOrWhiteSpace(bundleManifest.StringVersion)
                 ? $"{textManifest.StringVersion} | R2:{bundleManifest.StringVersion}"
                 : textManifest.StringVersion,
