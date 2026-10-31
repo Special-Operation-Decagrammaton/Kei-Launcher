@@ -20,6 +20,7 @@ partial class SettingsWindowViewModel : ViewModelBase
 
     [ObservableProperty] public partial bool CloseOnLaunch { get; set; }
     [ObservableProperty] public partial bool CheckUpdateOnLaunch { get; set; }
+    [ObservableProperty] public partial bool DownloadGraphicBundles { get; set; }
     [ObservableProperty] public partial string StatusText { get; private set; } = "";
     [ObservableProperty] public partial string StatusColor { get; private set; } = "White";
 
@@ -30,6 +31,7 @@ partial class SettingsWindowViewModel : ViewModelBase
     public string VersionLabel => $"{_loc["version"]}: v{Constants.Version}";
     public string CloseOnLaunchLabel => _loc["close_on_launch"];
     public string CheckUpdateOnLaunchLabel => _loc["check_update_on_launch"];
+    public string DownloadGraphicBundlesLabel => _loc["download_graphic_bundles"];
     public string GithubRepoLabel => _loc["github_repo"];
     public string CheckUpdateLabel => _loc["launcher_check_update"];
     public string LanguageLabel => _loc["language"];
@@ -44,6 +46,7 @@ partial class SettingsWindowViewModel : ViewModelBase
 
         CloseOnLaunch = state.Config.CloseOnLaunch;
         CheckUpdateOnLaunch = state.Config.CheckUpdateOnLaunch;
+        DownloadGraphicBundles = state.Config.DownloadGraphicBundles;
         SelectedLanguageDisplay = state.Config.Language == "pt" ? "Português" : "English";
     }
 
@@ -65,6 +68,12 @@ partial class SettingsWindowViewModel : ViewModelBase
     partial void OnCheckUpdateOnLaunchChanged(bool value)
     {
         _state.Config.CheckUpdateOnLaunch = value;
+        _config.Save(_state.Config);
+    }
+
+    partial void OnDownloadGraphicBundlesChanged(bool value)
+    {
+        _state.Config.DownloadGraphicBundles = value;
         _config.Save(_state.Config);
     }
 
@@ -107,6 +116,7 @@ partial class SettingsWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VersionLabel));
         OnPropertyChanged(nameof(CloseOnLaunchLabel));
         OnPropertyChanged(nameof(CheckUpdateOnLaunchLabel));
+        OnPropertyChanged(nameof(DownloadGraphicBundlesLabel));
         OnPropertyChanged(nameof(GithubRepoLabel));
         OnPropertyChanged(nameof(CheckUpdateLabel));
         OnPropertyChanged(nameof(LanguageLabel));

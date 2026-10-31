@@ -164,4 +164,7 @@
   <data name="st_uninstall_fail" xml:space="preserve">
     <value>Uninstall failed.</value>
   </data>
+  <data name="download_graphic_bundles" xml:space="preserve">
+    <value>Download Image Patch (Bundles)</value>
+  </data>
 </root>
