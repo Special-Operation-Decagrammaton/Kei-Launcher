@@ -276,7 +276,7 @@ partial class MainWindowViewModel : ViewModelBase
                 RefreshLatestPatchText();
             }
 
-            await foreach (var progress in _updateService.PerformUpdateAsync(_state.Config, _state.RemoteManifest, _downloadCts.Token))
+            await foreach (var progress in _updateService.PerformUpdateAsync(_state.Config, _state.RemoteManifest, _state.InstalledManifest, _downloadCts.Token))
                 ApplyProgress(progress);
 
             _manifestService.SaveInstalled(_state.RemoteManifest);
