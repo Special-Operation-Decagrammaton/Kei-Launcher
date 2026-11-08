@@ -46,7 +46,8 @@ class UpdateService(HttpClient http, ManifestService manifestService)
             f => ResolveDownloadUrl(config, f),
             "Downloading",
             "Update Complete!",
-            ct);
+            ct,
+            config.BackupBundles);
 
         await foreach (var progress in stream)
             yield return progress;
@@ -112,6 +113,10 @@ class UpdateService(HttpClient http, ManifestService manifestService)
                          f.OriginalDownloadUrl.Contains("yo-star.com", StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
+        var bundleFiles = installed.Files
+            .Where(f => f.FinalizedFileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
         if (officialRevertFiles.Count > 0)
         {
             var stream = DownloadFileListAsync(
@@ -119,24 +124,40 @@ class UpdateService(HttpClient http, ManifestService manifestService)
                 officialRevertFiles,
                 f => $"{f.OriginalDownloadUrl.TrimEnd('/')}/{f.OriginalFileName}",
                 "Reverting",
-                "Uninstall Complete!",
+                "Revert Complete!",
                 ct);
 
             await foreach (var progress in stream)
+            {
+                if (bundleFiles.Count > 0 && progress.Phase == DownloadPhase.Done)
+                    continue;
                 yield return progress;
+            }
         }
 
-        var bundleFiles = installed.Files
-            .Where(f => f.FinalizedFileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        foreach (var b in bundleFiles)
+        int totalBundles = bundleFiles.Count;
+        for (int i = 0; i < totalBundles; i++)
         {
+            ct.ThrowIfCancellationRequested();
+            var b = bundleFiles[i];
+            var bPath = Path.Combine(config.GamePath!, b.FolderPath, b.FinalizedFileName);
+            var bakPath = bPath + ".bak";
+
+            var name = !string.IsNullOrEmpty(b.OriginalFileName) ? b.OriginalFileName : b.FinalizedFileName;
+            yield return new(DownloadPhase.DownloadingFiles, $"Restoring: {name} ({i + 1}/{totalBundles})", (double)(i + 1) / totalBundles, 0.0);
+
             try
             {
-                var bPath = Path.Combine(config.GamePath!, b.FolderPath, b.FinalizedFileName);
-                if (File.Exists(bPath))
+                if (File.Exists(bakPath))
+                {
+                    if (File.Exists(bPath))
+                        File.Delete(bPath);
+                    File.Move(bakPath, bPath);
+                }
+                else if (File.Exists(bPath))
+                {
                     File.Delete(bPath);
+                }
             }
             catch { }
         }
@@ -150,7 +171,8 @@ class UpdateService(HttpClient http, ManifestService manifestService)
         Func<PatchFileInfo, string> getUrl,
         string verb,
         string doneMessage,
-        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct,
+        bool backupBundles = false)
     {
         int total = files.Count;
         for (int i = 0; i < total; i++)
@@ -164,7 +186,7 @@ class UpdateService(HttpClient http, ManifestService manifestService)
             var url = getUrl(asset);
             yield return new(DownloadPhase.DownloadingFiles, $"{verb}: {asset.OriginalFileName} ({i + 1}/{total})", (double)i / total, 0.0);
 
-            await foreach (var (readBytes, fileTotal) in DownloadStreamAsync(http, url, tempPath, destPath, ct))
+            await foreach (var (readBytes, fileTotal) in DownloadStreamAsync(http, url, tempPath, destPath, ct, backupBundles))
             {
                 double fileProgress = fileTotal > 0 ? (double)readBytes / fileTotal : 0.0;
                 double overallProgress = (i + fileProgress) / total;
@@ -180,7 +202,7 @@ class UpdateService(HttpClient http, ManifestService manifestService)
     }
 
     static async IAsyncEnumerable<(long ReadBytes, long TotalBytes)> DownloadStreamAsync(
-        HttpClient http, string url, string tempPath, string destPath, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        HttpClient http, string url, string tempPath, string destPath, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct, bool backupBundles = false)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
@@ -213,7 +235,18 @@ class UpdateService(HttpClient http, ManifestService manifestService)
                 }
             }
 
-            if (File.Exists(destPath)) File.Delete(destPath);
+            if (File.Exists(destPath))
+            {
+                if (backupBundles && destPath.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                {
+                    var bakPath = destPath + ".bak";
+                    if (!File.Exists(bakPath))
+                    {
+                        try { File.Copy(destPath, bakPath, true); } catch { }
+                    }
+                }
+                File.Delete(destPath);
+            }
             File.Move(tempPath, destPath);
             succeeded = true;
         }

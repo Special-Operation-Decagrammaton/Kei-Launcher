@@ -5,7 +5,7 @@
         x:DataType="vm:SettingsWindowViewModel"
         Title="{Binding Title}"
         Icon="/Assets/Icon/kei_halo.ico"
-        Width="430" Height="510"
+        Width="430" Height="540"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         Background="#0a0f18">
@@ -55,6 +55,11 @@
 
                 <CheckBox Content="{Binding DownloadGraphicBundlesLabel}"
                           IsChecked="{Binding DownloadGraphicBundles}"
+                          Foreground="#e2e8f0"
+                          FontSize="13" />
+
+                <CheckBox Content="{Binding BackupBundlesLabel}"
+                          IsChecked="{Binding BackupBundles}"
                           Foreground="#e2e8f0"
                           FontSize="13" />
 
