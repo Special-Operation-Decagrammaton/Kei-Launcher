@@ -167,4 +167,7 @@
   <data name="download_graphic_bundles" xml:space="preserve">
     <value>Baixar Patch de Imagens (Bundles)</value>
   </data>
+  <data name="backup_bundles" xml:space="preserve">
+    <value>Fazer Backup dos Bundles Originais</value>
+  </data>
 </root>
