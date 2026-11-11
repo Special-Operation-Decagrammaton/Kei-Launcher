@@ -25,7 +25,7 @@ class ManifestService(HttpClient http)
         if (config.Branch == Branch.None) return null;
 
         var textTask = FetchTextManifestAsync(branchValue, ct);
-        Task<PatchManifest?>? r2Task = null;
+        Task<BundleManifest?>? r2Task = null;
 
         if (config.DownloadGraphicBundles)
         {
@@ -37,7 +37,7 @@ class ManifestService(HttpClient http)
         }
 
         PatchManifest? textManifest = null;
-        PatchManifest? bundleManifest = null;
+        BundleManifest? bundleManifest = null;
 
         try { textManifest = await textTask; } catch { }
         if (r2Task != null)
@@ -64,7 +64,7 @@ class ManifestService(HttpClient http)
         catch { return null; }
     }
 
-    public async Task<PatchManifest?> FetchR2BundleManifestAsync(string r2BaseUrl, CancellationToken ct)
+    public async Task<BundleManifest?> FetchR2BundleManifestAsync(string r2BaseUrl, CancellationToken ct)
     {
         var url = $"{r2BaseUrl.TrimEnd('/')}/BundleManifest.json";
         try
@@ -72,7 +72,7 @@ class ManifestService(HttpClient http)
             using var response = await http.GetAsync(url, ct);
             if (!response.IsSuccessStatusCode) return null;
             var json = await response.Content.ReadAsStringAsync(ct);
-            var manifest = JsonSerializer.Deserialize(json, AppJsonContext.Default.PatchManifest);
+            var manifest = JsonSerializer.Deserialize(json, AppJsonContext.Default.BundleManifest);
             if (manifest?.Files != null)
             {
                 foreach (var file in manifest.Files)
@@ -89,10 +89,27 @@ class ManifestService(HttpClient http)
         catch { return null; }
     }
 
-    public static PatchManifest MergeManifests(PatchManifest? textManifest, PatchManifest? bundleManifest)
+    public static PatchManifest MergeManifests(PatchManifest? textManifest, BundleManifest? bundleManifest)
     {
-        if (textManifest is null) return bundleManifest!;
-        if (bundleManifest is null) return textManifest;
+        if (textManifest is null && bundleManifest is null) return new PatchManifest();
+        if (bundleManifest is null) return textManifest!;
+        if (textManifest is null)
+        {
+            return new PatchManifest
+            {
+                UpdateDate = bundleManifest.UpdateDate,
+                StringVersion = bundleManifest.StringVersion,
+                PatchNote = CombineNotes(null, bundleManifest.PatchNote),
+                Files = bundleManifest.Files.Select(file => new PatchFileInfo
+                {
+                    OriginalFileName = file.OriginalFileName,
+                    FinalizedFileName = file.FinalizedFileName,
+                    OriginalDownloadUrl = file.DownloadUrl ?? file.OriginalDownloadUrl,
+                    FolderPath = file.FolderPath,
+                    Hash = file.Hash
+                }).ToList()
+            };
+        }
 
         var combined = new PatchManifest
         {
@@ -115,7 +132,14 @@ class ManifestService(HttpClient http)
         foreach (var file in bundleManifest.Files)
         {
             var key = $"{file.FolderPath.Replace('\\', '/')}/{file.FinalizedFileName}";
-            fileMap[key] = file;
+            fileMap[key] = new PatchFileInfo
+            {
+                OriginalFileName = file.OriginalFileName,
+                FinalizedFileName = file.FinalizedFileName,
+                OriginalDownloadUrl = file.DownloadUrl ?? file.OriginalDownloadUrl,
+                FolderPath = file.FolderPath,
+                Hash = file.Hash
+            };
         }
 
         combined.Files = fileMap.Values.ToList();

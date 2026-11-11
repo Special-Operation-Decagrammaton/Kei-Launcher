@@ -11,7 +11,6 @@ class PatchFileInfo
     public string FolderPath { get; set; } = "";
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public long Hash { get; set; }
-    public string? DownloadUrl { get; set; }
 }
 
 class PatchManifest
