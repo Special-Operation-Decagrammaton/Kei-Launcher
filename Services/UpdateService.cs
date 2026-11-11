@@ -84,13 +84,12 @@ class UpdateService(HttpClient http, ManifestService manifestService)
 
     public static string ResolveDownloadUrl(LauncherConfig config, PatchFileInfo f)
     {
-        if (!string.IsNullOrEmpty(f.DownloadUrl))
-            return f.DownloadUrl;
-
         if (!string.IsNullOrEmpty(f.OriginalDownloadUrl) &&
             (f.OriginalDownloadUrl.Contains("r2.dev", StringComparison.OrdinalIgnoreCase) ||
              f.OriginalDownloadUrl.Contains("cloudflarestorage.com", StringComparison.OrdinalIgnoreCase)))
         {
+            if (f.OriginalDownloadUrl.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                return f.OriginalDownloadUrl;
             return $"{f.OriginalDownloadUrl.TrimEnd('/')}/{f.FinalizedFileName}";
         }
 

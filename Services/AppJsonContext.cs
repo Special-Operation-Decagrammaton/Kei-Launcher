@@ -9,6 +9,8 @@ namespace KeiLauncher.Services;
 [JsonSerializable(typeof(LauncherConfig))]
 [JsonSerializable(typeof(PatchManifest))]
 [JsonSerializable(typeof(PatchFileInfo))]
+[JsonSerializable(typeof(BundleManifest))]
+[JsonSerializable(typeof(BundleFileInfo))]
 [JsonSerializable(typeof(Branch))]
 internal partial class AppJsonContext : JsonSerializerContext
 {
