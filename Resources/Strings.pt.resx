@@ -164,4 +164,19 @@
   <data name="st_uninstall_fail" xml:space="preserve">
     <value>Falha na desinstalação.</value>
   </data>
+  <data name="download_graphic_bundles" xml:space="preserve">
+    <value>Baixar Patch de Imagens (Bundles)</value>
+  </data>
+  <data name="backup_bundles" xml:space="preserve">
+    <value>Fazer Backup dos Bundles Originais</value>
+  </data>
+  <data name="download_graphic_bundles_tooltip" xml:space="preserve">
+    <value>Baixa o patch de bundles de imagem em {0} (texturas de interface).</value>
+  </data>
+  <data name="download_graphic_bundles_tooltip_generic" xml:space="preserve">
+    <value>Baixa o patch de bundles de imagem (texturas de interface).</value>
+  </data>
+  <data name="backup_bundles_tooltip" xml:space="preserve">
+    <value>Cria backups locais (.bak) dos bundles originais para restauração rápida ao desinstalar o patch de imagens. Caso contrário, você precisará reverter os bundles patcheados usando a verificação de integridade no jogo.</value>
+  </data>
 </root>

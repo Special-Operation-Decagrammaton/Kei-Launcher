@@ -19,7 +19,7 @@ class UpdateService(HttpClient http, ManifestService manifestService)
     public async Task<(PatchManifest? Manifest, UpdateCheckResult Result)> CheckUpdatesAsync(
         LauncherConfig config, PatchManifest? installed, CancellationToken ct)
     {
-        var remote = await manifestService.FetchCombinedManifestAsync(config.Branch.ToValue(), ct);
+        var remote = await manifestService.FetchCombinedManifestAsync(config, ct);
         if (remote is null)
             return (null, new("Failed to fetch manifest.", "Red"));
 
@@ -28,37 +28,140 @@ class UpdateService(HttpClient http, ManifestService manifestService)
     }
 
     public async IAsyncEnumerable<DownloadProgress> PerformUpdateAsync(
-        LauncherConfig config, PatchManifest remote, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        LauncherConfig config,
+        PatchManifest remote,
+        PatchManifest? installed = null,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
         yield return new(DownloadPhase.FetchingManifest, "Fetching latest manifest...");
-        yield return new(DownloadPhase.DownloadingFiles, "Downloading translation files...");
+        yield return new(DownloadPhase.DownloadingFiles, "Downloading translation and bundle files...");
+
+        var filesToDownload = GetFilesNeedingDownload(config.GamePath!, remote.Files, installed);
+        if (filesToDownload.Count == 0)
+            filesToDownload = remote.Files;
 
         var stream = DownloadFileListAsync(
             config.GamePath!,
-            remote.Files,
-            f => $"https://github.com/{Constants.Repo}/releases/download/{config.Branch.ToValue()}/{f.Hash}",
+            filesToDownload,
+            f => ResolveDownloadUrl(config, f),
             "Downloading",
             "Update Complete!",
-            ct);
+            ct,
+            config.BackupBundles);
 
         await foreach (var progress in stream)
             yield return progress;
     }
 
+    public static List<PatchFileInfo> GetFilesNeedingDownload(
+        string gamePath,
+        IReadOnlyList<PatchFileInfo> remoteFiles,
+        PatchManifest? installed)
+    {
+        var installedByKey = new Dictionary<string, PatchFileInfo>(StringComparer.OrdinalIgnoreCase);
+        if (installed != null)
+        {
+            foreach (var f in installed.Files)
+                installedByKey[$"{f.FolderPath.Replace('\\', '/')}/{f.FinalizedFileName}"] = f;
+        }
+
+        var result = new List<PatchFileInfo>();
+        foreach (var asset in remoteFiles)
+        {
+            var fullPath = Path.Combine(gamePath, asset.FolderPath, asset.FinalizedFileName);
+            var key = $"{asset.FolderPath.Replace('\\', '/')}/{asset.FinalizedFileName}";
+
+            bool needsDownload = !File.Exists(fullPath) ||
+                                !installedByKey.TryGetValue(key, out var old) ||
+                                old.Hash != asset.Hash;
+
+            if (needsDownload)
+                result.Add(asset);
+        }
+
+        return result;
+    }
+
+    public static string ResolveDownloadUrl(LauncherConfig config, PatchFileInfo f)
+    {
+        if (!string.IsNullOrEmpty(f.OriginalDownloadUrl) &&
+            (f.OriginalDownloadUrl.Contains("r2.dev", StringComparison.OrdinalIgnoreCase) ||
+             f.OriginalDownloadUrl.Contains("cloudflarestorage.com", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (f.OriginalDownloadUrl.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                return f.OriginalDownloadUrl;
+            return $"{f.OriginalDownloadUrl.TrimEnd('/')}/{f.FinalizedFileName}";
+        }
+
+        if (f.FinalizedFileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+        {
+            var r2Base = Constants.GetR2BaseUrl(config.Branch);
+            if (!string.IsNullOrEmpty(r2Base))
+                return $"{r2Base.TrimEnd('/')}/{f.FinalizedFileName}";
+        }
+
+        return $"https://github.com/{Constants.Repo}/releases/download/{config.Branch.ToValue()}/{f.Hash}";
+    }
+
     public async IAsyncEnumerable<DownloadProgress> PerformUninstallAsync(
         LauncherConfig config, PatchManifest installed, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
-        var files = installed.Files.Where(f => !string.IsNullOrEmpty(f.OriginalDownloadUrl)).ToList();
-        var stream = DownloadFileListAsync(
-            config.GamePath!,
-            files,
-            f => $"{f.OriginalDownloadUrl.TrimEnd('/')}/{f.OriginalFileName}",
-            "Reverting",
-            "Uninstall Complete!",
-            ct);
+        var officialRevertFiles = installed.Files
+            .Where(f => !string.IsNullOrEmpty(f.OriginalDownloadUrl) &&
+                        (f.OriginalDownloadUrl.Contains("bluearchiveyostar.com", StringComparison.OrdinalIgnoreCase) ||
+                         f.OriginalDownloadUrl.Contains("yo-star.com", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
 
-        await foreach (var progress in stream)
-            yield return progress;
+        var bundleFiles = installed.Files
+            .Where(f => f.FinalizedFileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (officialRevertFiles.Count > 0)
+        {
+            var stream = DownloadFileListAsync(
+                config.GamePath!,
+                officialRevertFiles,
+                f => $"{f.OriginalDownloadUrl.TrimEnd('/')}/{f.OriginalFileName}",
+                "Reverting",
+                "Revert Complete!",
+                ct);
+
+            await foreach (var progress in stream)
+            {
+                if (bundleFiles.Count > 0 && progress.Phase == DownloadPhase.Done)
+                    continue;
+                yield return progress;
+            }
+        }
+
+        int totalBundles = bundleFiles.Count;
+        for (int i = 0; i < totalBundles; i++)
+        {
+            ct.ThrowIfCancellationRequested();
+            var b = bundleFiles[i];
+            var bPath = Path.Combine(config.GamePath!, b.FolderPath, b.FinalizedFileName);
+            var bakPath = bPath + ".bak";
+
+            var name = !string.IsNullOrEmpty(b.OriginalFileName) ? b.OriginalFileName : b.FinalizedFileName;
+            yield return new(DownloadPhase.DownloadingFiles, $"Restoring: {name} ({i + 1}/{totalBundles})", (double)(i + 1) / totalBundles, 0.0);
+
+            try
+            {
+                if (File.Exists(bakPath))
+                {
+                    if (File.Exists(bPath))
+                        File.Delete(bPath);
+                    File.Move(bakPath, bPath);
+                }
+                else if (File.Exists(bPath))
+                {
+                    File.Delete(bPath);
+                }
+            }
+            catch { }
+        }
+
+        yield return new(DownloadPhase.Done, "Uninstall Complete!", 1.0, 1.0, "Green");
     }
 
     async IAsyncEnumerable<DownloadProgress> DownloadFileListAsync(
@@ -67,7 +170,8 @@ class UpdateService(HttpClient http, ManifestService manifestService)
         Func<PatchFileInfo, string> getUrl,
         string verb,
         string doneMessage,
-        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct,
+        bool backupBundles = false)
     {
         int total = files.Count;
         for (int i = 0; i < total; i++)
@@ -81,7 +185,7 @@ class UpdateService(HttpClient http, ManifestService manifestService)
             var url = getUrl(asset);
             yield return new(DownloadPhase.DownloadingFiles, $"{verb}: {asset.OriginalFileName} ({i + 1}/{total})", (double)i / total, 0.0);
 
-            await foreach (var (readBytes, fileTotal) in DownloadStreamAsync(http, url, tempPath, destPath, ct))
+            await foreach (var (readBytes, fileTotal) in DownloadStreamAsync(http, url, tempPath, destPath, ct, backupBundles))
             {
                 double fileProgress = fileTotal > 0 ? (double)readBytes / fileTotal : 0.0;
                 double overallProgress = (i + fileProgress) / total;
@@ -97,7 +201,7 @@ class UpdateService(HttpClient http, ManifestService manifestService)
     }
 
     static async IAsyncEnumerable<(long ReadBytes, long TotalBytes)> DownloadStreamAsync(
-        HttpClient http, string url, string tempPath, string destPath, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        HttpClient http, string url, string tempPath, string destPath, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct, bool backupBundles = false)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
@@ -130,7 +234,18 @@ class UpdateService(HttpClient http, ManifestService manifestService)
                 }
             }
 
-            if (File.Exists(destPath)) File.Delete(destPath);
+            if (File.Exists(destPath))
+            {
+                if (backupBundles && destPath.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                {
+                    var bakPath = destPath + ".bak";
+                    if (!File.Exists(bakPath))
+                    {
+                        try { File.Copy(destPath, bakPath, true); } catch { }
+                    }
+                }
+                File.Delete(destPath);
+            }
             File.Move(tempPath, destPath);
             succeeded = true;
         }

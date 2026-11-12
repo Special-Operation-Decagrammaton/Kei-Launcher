@@ -7,6 +7,8 @@ class LauncherConfig
     public Branch Branch { get; set; } = Branch.None;
     public bool CloseOnLaunch { get; set; } = true;
     public bool CheckUpdateOnLaunch { get; set; } = true;
+    public bool DownloadGraphicBundles { get; set; } = false;
+    public bool BackupBundles { get; set; } = true;
 
     public static LauncherConfig Default => new();
 }

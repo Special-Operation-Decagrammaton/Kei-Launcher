@@ -20,6 +20,8 @@ partial class SettingsWindowViewModel : ViewModelBase
 
     [ObservableProperty] public partial bool CloseOnLaunch { get; set; }
     [ObservableProperty] public partial bool CheckUpdateOnLaunch { get; set; }
+    [ObservableProperty] public partial bool DownloadGraphicBundles { get; set; }
+    [ObservableProperty] public partial bool BackupBundles { get; set; }
     [ObservableProperty] public partial string StatusText { get; private set; } = "";
     [ObservableProperty] public partial string StatusColor { get; private set; } = "White";
 
@@ -30,6 +32,25 @@ partial class SettingsWindowViewModel : ViewModelBase
     public string VersionLabel => $"{_loc["version"]}: v{Constants.Version}";
     public string CloseOnLaunchLabel => _loc["close_on_launch"];
     public string CheckUpdateOnLaunchLabel => _loc["check_update_on_launch"];
+    public string DownloadGraphicBundlesLabel => _loc["download_graphic_bundles"];
+    public string DownloadGraphicBundlesToolTip
+    {
+        get
+        {
+            var branchLang = _state.Config.Branch switch
+            {
+                Branch.PtBr => _loc.CurrentLanguage == "pt" ? "Português" : "Portuguese",
+                Branch.EnOri or Branch.EnExt => _loc.CurrentLanguage == "pt" ? "Inglês" : "English",
+                _ => null
+            };
+
+            return branchLang != null
+                ? string.Format(_loc["download_graphic_bundles_tooltip"], branchLang)
+                : _loc["download_graphic_bundles_tooltip_generic"];
+        }
+    }
+    public string BackupBundlesLabel => _loc["backup_bundles"];
+    public string BackupBundlesToolTip => _loc["backup_bundles_tooltip"];
     public string GithubRepoLabel => _loc["github_repo"];
     public string CheckUpdateLabel => _loc["launcher_check_update"];
     public string LanguageLabel => _loc["language"];
@@ -44,6 +65,8 @@ partial class SettingsWindowViewModel : ViewModelBase
 
         CloseOnLaunch = state.Config.CloseOnLaunch;
         CheckUpdateOnLaunch = state.Config.CheckUpdateOnLaunch;
+        DownloadGraphicBundles = state.Config.DownloadGraphicBundles;
+        BackupBundles = state.Config.BackupBundles;
         SelectedLanguageDisplay = state.Config.Language == "pt" ? "Português" : "English";
     }
 
@@ -65,6 +88,18 @@ partial class SettingsWindowViewModel : ViewModelBase
     partial void OnCheckUpdateOnLaunchChanged(bool value)
     {
         _state.Config.CheckUpdateOnLaunch = value;
+        _config.Save(_state.Config);
+    }
+
+    partial void OnDownloadGraphicBundlesChanged(bool value)
+    {
+        _state.Config.DownloadGraphicBundles = value;
+        _config.Save(_state.Config);
+    }
+
+    partial void OnBackupBundlesChanged(bool value)
+    {
+        _state.Config.BackupBundles = value;
         _config.Save(_state.Config);
     }
 
@@ -107,6 +142,10 @@ partial class SettingsWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VersionLabel));
         OnPropertyChanged(nameof(CloseOnLaunchLabel));
         OnPropertyChanged(nameof(CheckUpdateOnLaunchLabel));
+        OnPropertyChanged(nameof(DownloadGraphicBundlesLabel));
+        OnPropertyChanged(nameof(DownloadGraphicBundlesToolTip));
+        OnPropertyChanged(nameof(BackupBundlesLabel));
+        OnPropertyChanged(nameof(BackupBundlesToolTip));
         OnPropertyChanged(nameof(GithubRepoLabel));
         OnPropertyChanged(nameof(CheckUpdateLabel));
         OnPropertyChanged(nameof(LanguageLabel));
