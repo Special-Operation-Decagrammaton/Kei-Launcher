@@ -170,4 +170,13 @@
   <data name="backup_bundles" xml:space="preserve">
     <value>Backup Original Bundles</value>
   </data>
+  <data name="download_graphic_bundles_tooltip" xml:space="preserve">
+    <value>Downloads the {0} image bundles patch (UI textures).</value>
+  </data>
+  <data name="download_graphic_bundles_tooltip_generic" xml:space="preserve">
+    <value>Downloads the image bundles patch (UI textures).</value>
+  </data>
+  <data name="backup_bundles_tooltip" xml:space="preserve">
+    <value>Creates local backups (.bak) of original bundles for fast restoration when uninstalling the image patch. Otherwise, you will need to revert the patched bundles using the integrity check in game.</value>
+  </data>
 </root>
