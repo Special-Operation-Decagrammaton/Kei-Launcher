@@ -32,4 +32,7 @@ static class AppServices
 
     public static SettingsWindow GetSettingsWindow() =>
         new() { DataContext = new SettingsWindowViewModel(State, Config, Loc, Update) };
+
+    public static DisclaimerWindow GetDisclaimerWindow() =>
+        new(Loc);
 }

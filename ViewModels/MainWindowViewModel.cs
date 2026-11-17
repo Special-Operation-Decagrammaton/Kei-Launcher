@@ -77,6 +77,7 @@ partial class MainWindowViewModel : ViewModelBase
     public event Action? CloseRequested;
     public event Action? OpenSettingsRequested;
     public event Action<string>? FolderDialogRequested;
+    public event Func<Task<bool>>? DisclaimerRequested;
 
     public MainWindowViewModel(
         LauncherState state,
@@ -119,8 +120,25 @@ partial class MainWindowViewModel : ViewModelBase
         {
             _isInitializing = false;
         }
+    }
 
-        _ = RunStartupChecksAsync();
+    public async Task StartAsync()
+    {
+        if (!_state.Config.DisclaimerAccepted)
+        {
+            if (DisclaimerRequested is null) return;
+            var accepted = await DisclaimerRequested.Invoke();
+            if (!accepted)
+            {
+                CloseRequested?.Invoke();
+                return;
+            }
+
+            _state.Config.DisclaimerAccepted = true;
+            _configRepo.Save(_state.Config);
+        }
+
+        await RunStartupChecksAsync();
     }
 
     void InitializeBackgroundRotation()
@@ -424,6 +442,7 @@ partial class MainWindowViewModel : ViewModelBase
             Branch.EnOri => _loc["desc_en_ori"],
             Branch.EnExt => _loc["desc_en_ext"],
             Branch.PtBr => _loc["desc_pt_br"],
+            Branch.RuRu => _loc["desc_ru_ru"],
             _ => _loc["desc_none"]
         };
     }

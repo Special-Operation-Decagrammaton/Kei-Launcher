@@ -9,6 +9,7 @@ class LauncherConfig
     public bool CheckUpdateOnLaunch { get; set; } = true;
     public bool DownloadGraphicBundles { get; set; } = false;
     public bool BackupBundles { get; set; } = true;
+    public bool DisclaimerAccepted { get; set; } = false;
 
     public static LauncherConfig Default => new();
 }

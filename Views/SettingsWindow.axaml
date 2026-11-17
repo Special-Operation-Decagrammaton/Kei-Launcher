@@ -12,7 +12,6 @@
 
     <Grid RowDefinitions="Auto, *, Auto" Margin="24,20,24,20">
 
-        <!-- Header -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,16" Spacing="6">
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                 <Image Source="/Assets/Icon/kei.ico" Width="26" Height="26" VerticalAlignment="Center" />
@@ -23,20 +22,9 @@
                            VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <Border Background="#102035"
-                        BorderBrush="#0284c7"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Padding="6,2">
-                    <TextBlock Text="// SYSTEM PREFERENCES"
-                               FontSize="11" FontWeight="Bold"
-                               Foreground="#38bdf8" />
-                </Border>
-                <TextBlock Text="{Binding VersionLabel}"
-                           FontSize="12" Foreground="#94a3b8"
-                           VerticalAlignment="Center" />
-            </StackPanel>
+            <TextBlock Text="{Binding VersionLabel}"
+                       FontSize="12" Foreground="#94a3b8"
+                       HorizontalAlignment="Center" />
         </StackPanel>
 
         <!-- Settings Options Card -->

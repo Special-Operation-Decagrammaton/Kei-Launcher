@@ -40,6 +40,7 @@ partial class SettingsWindowViewModel : ViewModelBase
             var branchLang = _state.Config.Branch switch
             {
                 Branch.PtBr => _loc.CurrentLanguage == "pt" ? "Português" : "Portuguese",
+                Branch.RuRu => _loc.CurrentLanguage == "pt" ? "Russo" : "Russian",
                 Branch.EnOri or Branch.EnExt => _loc.CurrentLanguage == "pt" ? "Inglês" : "English",
                 _ => null
             };

@@ -10,7 +10,8 @@ enum Branch
     None,
     EnOri,
     EnExt,
-    PtBr
+    PtBr,
+    RuRu
 }
 
 class BranchConverter : JsonConverter<Branch>
@@ -31,6 +32,7 @@ static class BranchExtensions
         Branch.EnOri => "en-ori",
         Branch.EnExt => "en-ext",
         Branch.PtBr => "pt-br",
+        Branch.RuRu => "ru-ru",
         _ => "none"
     };
 
@@ -39,8 +41,9 @@ static class BranchExtensions
         "en-ori" or "enori" => Branch.EnOri,
         "en-ext" or "enext" => Branch.EnExt,
         "pt-br" or "ptbr" => Branch.PtBr,
+        "ru-ru" or "ruru" => Branch.RuRu,
         _ => Branch.None
     };
 
-    public static string[] AllDisplayValues() => ["none", "en-ori", "en-ext", "pt-br"];
+    public static string[] AllDisplayValues() => ["none", "en-ori", "en-ext", "pt-br", "ru-ru"];
 }

@@ -20,8 +20,16 @@ public partial class MainWindow : Window
             vm.FolderDialogRequested += OnFolderDialogRequested;
             vm.OpenSettingsRequested += OnOpenSettingsRequested;
             vm.LauncherUpdateAvailable += OnLauncherUpdateAvailable;
+            vm.DisclaimerRequested += OnDisclaimerRequested;
             vm.CloseRequested += Close;
         }
+    }
+
+    protected override async void OnOpened(System.EventArgs e)
+    {
+        base.OnOpened(e);
+        if (DataContext is MainWindowViewModel vm)
+            await vm.StartAsync();
     }
 
     async void OnFolderDialogRequested(string startPath)
@@ -51,5 +59,11 @@ public partial class MainWindow : Window
                 await vm.CheckUpdateCommand.ExecuteAsync(null);
         });
         win.ShowDialog(this);
+    }
+
+    async Task<bool> OnDisclaimerRequested()
+    {
+        var win = AppServices.GetDisclaimerWindow();
+        return await win.ShowDialog<bool>(this);
     }
 }

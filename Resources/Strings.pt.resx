@@ -107,6 +107,9 @@
   <data name="desc_pt_br" xml:space="preserve">
     <value>Tradução em Português (Brasil).</value>
   </data>
+  <data name="desc_ru_ru" xml:space="preserve">
+    <value>Tradução da comunidade em russo.</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>Configurações</value>
   </data>
@@ -178,5 +181,26 @@
   </data>
   <data name="backup_bundles_tooltip" xml:space="preserve">
     <value>Cria backups locais (.bak) dos bundles originais para restauração rápida ao desinstalar o patch de imagens. Caso contrário, você precisará reverter os bundles patcheados usando a verificação de integridade no jogo.</value>
+  </data>
+  <data name="disclaimer_title" xml:space="preserve">
+    <value>Aviso Legal &amp; Termos de Serviço</value>
+  </data>
+  <data name="disclaimer_header" xml:space="preserve">
+    <value>AVISO SOBRE TERMOS DE SERVIÇO</value>
+  </data>
+  <data name="disclaimer_body" xml:space="preserve">
+    <value>O Kei Launcher é uma ferramenta criada pela comunidade e não possui afiliação com a Nexon, NAT Games, NEXON Games ou Yostar.
+
+• A modificação de arquivos do cliente do jogo pode violar os Termos de Serviço (TOS). Use por sua própria conta e risco.
+• Os desenvolvedores e colaboradores não assumem qualquer responsabilidade por banimentos de conta, suspensões ou perda de dados.
+• Esta ferramenta apenas sincroniza arquivos de texto de localização do cliente. Ela não altera memória do jogo, executáveis ou sistemas anti-cheat.
+
+Ao continuar, você reconhece e aceita estes termos e riscos.</value>
+  </data>
+  <data name="disclaimer_accept" xml:space="preserve">
+    <value>Aceitar e Continuar</value>
+  </data>
+  <data name="disclaimer_exit" xml:space="preserve">
+    <value>Sair</value>
   </data>
 </root>

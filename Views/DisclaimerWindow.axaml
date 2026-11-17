@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="KeiLauncher.Views.DisclaimerWindow"
+        Icon="/Assets/Icon/kei_halo.ico"
+        Width="500"
+        SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#0a0f18">
+
+    <Grid Margin="16">
+        <Border Classes="cyber-card">
+            <StackPanel Spacing="14">
+
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <TextBlock Text="⚠" Foreground="#f87171" FontSize="14" VerticalAlignment="Center" />
+                    <TextBlock x:Name="HeaderLabel"
+                               FontSize="12" FontWeight="Bold"
+                               Foreground="#f87171"
+                               LetterSpacing="0.8"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Border Background="#16121e" BorderBrush="#3f1d2c" BorderThickness="1" CornerRadius="6" Padding="14,12">
+                    <TextBlock x:Name="MessageLabel"
+                               FontSize="12" Foreground="#cbd5e1"
+                               TextWrapping="Wrap"
+                               LineHeight="18" />
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+                    <Button x:Name="ExitBtn"
+                            Classes="cyber-btn tech"
+                            Width="110" Height="36" />
+                    <Button x:Name="AcceptBtn"
+                            Classes="cyber-btn blue"
+                            Width="160" Height="36" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

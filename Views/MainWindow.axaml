@@ -144,7 +144,6 @@
 
         <Grid RowDefinitions="Auto, *, Auto" Margin="32,20,32,20">
 
-            <!-- Top Bar / Header -->
             <Grid Grid.Row="0" Margin="0,0,0,16">
                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                     <Image Source="/Assets/Icon/kei.ico" Width="34" Height="34" VerticalAlignment="Center" />
@@ -153,17 +152,6 @@
                                Foreground="White"
                                LetterSpacing="1.5"
                                VerticalAlignment="Center" />
-                    <Border Background="#102035"
-                            BorderBrush="#0284c7"
-                            BorderThickness="1"
-                            CornerRadius="4"
-                            Padding="8,3"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="// MILLENNIUM TERMINAL"
-                                   FontSize="11" FontWeight="Bold"
-                                   Foreground="#38bdf8"
-                                   LetterSpacing="0.8" />
-                    </Border>
                 </StackPanel>
 
                 <Button Classes="cyber-btn tech"

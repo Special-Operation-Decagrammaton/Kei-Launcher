@@ -30,6 +30,7 @@
   - `en-ori` — Follows official global English translation.
   - `en-ext` — Extended community-enhanced English translation.
   - `pt-br` — Brazilian Portuguese community localization.
+  - `ru-ru` — Russian community localization.
 - ↩️ **Safe Revert / Uninstall:** Reverts translated files back to original game assets using cached backup URLs.
 - 🌍 **Multi-Language UI:** Built-in localization support for both English and Portuguese.
 
@@ -100,4 +101,4 @@ dotnet publish -r linux-x64 -c Release -o publish-linux
 
 ## Credits & Attribution
 
-All assets are the intellectual property and copyright of **Nexon Games Co., Ltd.** and **Yostar (Hong Kong) Limited**. This project does not claim any ownership over these assets.
+All assets are the intellectual property and copyright of **Nexon Games Co., Ltd.**. This project does not claim any ownership over these assets.

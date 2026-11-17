@@ -107,6 +107,9 @@
   <data name="desc_pt_br" xml:space="preserve">
     <value>Portuguese (Brazil) translation.</value>
   </data>
+  <data name="desc_ru_ru" xml:space="preserve">
+    <value>Russian community translation.</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>Settings</value>
   </data>
@@ -178,5 +181,26 @@
   </data>
   <data name="backup_bundles_tooltip" xml:space="preserve">
     <value>Creates local backups (.bak) of original bundles for fast restoration when uninstalling the image patch. Otherwise, you will need to revert the patched bundles using the integrity check in game.</value>
+  </data>
+  <data name="disclaimer_title" xml:space="preserve">
+    <value>Terms of Service Disclaimer</value>
+  </data>
+  <data name="disclaimer_header" xml:space="preserve">
+    <value>TERMS OF SERVICE DISCLAIMER</value>
+  </data>
+  <data name="disclaimer_body" xml:space="preserve">
+    <value>Kei Launcher is a fan-made community utility and is not affiliated with Nexon, NAT Games, NEXON Games, or Yostar.
+
+• Modifying game client assets may violate the game's Terms of Service (TOS). Use at your own discretion and risk.
+• The developers and contributors assume no responsibility for account bans, suspensions, or data loss.
+• This utility synchronizes client localization text assets only. It does not tamper with game memory, executables, or anti-cheat mechanisms.
+
+By continuing, you acknowledge and accept these terms and risks.</value>
+  </data>
+  <data name="disclaimer_accept" xml:space="preserve">
+    <value>I Accept &amp; Continue</value>
+  </data>
+  <data name="disclaimer_exit" xml:space="preserve">
+    <value>Exit</value>
   </data>
 </root>
